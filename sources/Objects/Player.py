@@ -18,6 +18,21 @@ class Player(Object.Object):
         self.spr_attack2 = pygame.image.load("../sprites/player/attack2.png").convert_alpha() # 3
         self.spr_attack3 = pygame.image.load("../sprites/player/attack3.png").convert_alpha() # 4
 
+        # player sound
+        self.sound_walk = pygame.mixer.Sound("../sounds/player/walk.mp3")
+        self.sound_attack1 = pygame.mixer.Sound("../sounds/player/attack1.mp3")
+        self.sound_attack2 = pygame.mixer.Sound("../sounds/player/attack2.mp3")
+        self.sound_attack3 = pygame.mixer.Sound("../sounds/player/attack3.mp3")
+
+        # set sound volume
+        self.sound_walk.set_volume(0.5)
+        self.sound_attack1.set_volume(0.5)
+        self.sound_attack2.set_volume(0.3)
+        self.sound_attack3.set_volume(0.2)
+
+        # about sound
+        self.is_move_sound_play = False
+
         # player move
         self.direction = False
         self.move_speed = 0.2
@@ -44,7 +59,6 @@ class Player(Object.Object):
 
     def update(self):
         self.attack_delay += self.delta_time
-
         # player move
         self.move()
 
@@ -99,6 +113,12 @@ class Player(Object.Object):
 
         if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able:
             self.state_index = 1
+
+            # play foot step sound
+            if not self.is_move_sound_play:
+                self.sound_walk.play(-1, 0, 1000)
+                self.is_move_sound_play = True
+
             if keys[pygame.K_RIGHT]:
                 self.x += self.move_speed * self.delta_time
 
@@ -111,6 +131,11 @@ class Player(Object.Object):
                     self.x = self.x - self.spr_width
                     self.direction = True
         else:
+            # set footstep sound
+            self.sound_walk.fadeout(500)
+            self.is_move_sound_play = False
+
+            # set sprite idle
             if self.state_index == 1:
                 self.state_index = 0
                 self.is_attack_able = True
@@ -126,14 +151,17 @@ class Player(Object.Object):
             if self.attack_combo == 0:
                 self.state_index = 2
                 self.attack_combo = 1
+                pygame.mixer.Sound.play(self.sound_attack1)
 
             elif self.attack_combo == 1:
                 self.state_index = 3
                 self.attack_combo = 2
+                pygame.mixer.Sound.play(self.sound_attack2)
 
             elif self.attack_combo == 2:
                 self.state_index = 4
                 self.attack_combo = 0
+                pygame.mixer.Sound.play(self.sound_attack3)
 
             self.is_move_able = False
             self.is_attack_able = False
