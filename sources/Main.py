@@ -38,14 +38,26 @@ def main():
     player = Player.Player(0, 0)
 
     while True:
-        clock.tick(60)
+        delta_time = clock.tick(60)
+
+        # set delta time of each object
+        player.delta_time = delta_time
+
+        # update each object
+        player.update()
+
+        # set screen white for update display
         screen.fill(white)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
 
-        player.move()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LCTRL:
+                    player.attack()
+
+
         draw(player)
         pygame.display.update()
 

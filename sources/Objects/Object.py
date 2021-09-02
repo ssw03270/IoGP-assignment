@@ -3,6 +3,7 @@ class Object:
         # object position
         self.x = 0
         self.y = 0
+        self.delta_time = 0
 
         # object state
         self.state_index = 0
