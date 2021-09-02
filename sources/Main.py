@@ -34,18 +34,19 @@ def draw(object = Object):
     screen.blit(sprite, (x, y))
 
 def main():
+    # player character
     player = Player.Player(0, 0)
 
     while True:
-        clock.tick(10)
+        clock.tick(60)
         screen.fill(white)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
 
+        player.move()
         draw(player)
-
         pygame.display.update()
 
 if __name__ == "__main__":
