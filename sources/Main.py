@@ -10,32 +10,41 @@ clock = pygame.time.Clock()
 # pygame start
 pygame.init()
 
-# set display size
+# pygame color
+black = (0,  0,  0)
+white = (255, 255, 255)
+blue = (0, 0, 255)
+green = (0, 255, 0)
+red = (255, 0, 0)
+
+# pygame display
 window_size = [640, 480]
 screen = pygame.display.set_mode(window_size)
 game_title = 'DarkestCave'
 pygame.display.set_caption(game_title)
+screen.fill(white)
 
 #####
 
-def draw(object=Object):
+def draw(object = Object):
     x = object.x
     y = object.y
 
-    state = object.state
-
-    screen.blit(object.draw_image(state), (x, y))
+    sprite = object.draw_image()
+    screen.blit(sprite, (x, y))
 
 def main():
-    player = Player.Player()
-    draw(player)
+    player = Player.Player(0, 0)
 
     while True:
-        clock.tick(60)
+        clock.tick(10)
+        screen.fill(white)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+
+        draw(player)
 
         pygame.display.update()
 
