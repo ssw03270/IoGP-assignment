@@ -50,7 +50,7 @@ class Player(Object.Object):
 
         # player hit
         self.hit_delay = 0
-        self.hit_max_delay = 500
+        self.hit_max_delay = 1000
         self.is_hit_able = True
 
         # palyer death
@@ -81,6 +81,7 @@ class Player(Object.Object):
             self.move()
         else:
             self.sound_walk.stop()
+        print(self.delta_time)
 
     def set_sprite(self):
         lis = []
@@ -135,7 +136,7 @@ class Player(Object.Object):
                     self.state_index = 0
                     self.is_attack_able = True
                     self.is_move_able = True
-                if self.state_index == 5:
+                elif self.state_index == 5:
                     self.state_index = 0
                     self.is_move_able = True
                 self.spr_index = 0
