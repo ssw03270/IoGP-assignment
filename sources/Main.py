@@ -3,7 +3,7 @@
 """
 
 import pygame, sys
-from sources.Objects import Object, Player
+from sources.Objects import Object, Player, FlowerEnemy
 from sources import Tileset
 
 clock = pygame.time.Clock()
@@ -84,18 +84,24 @@ def draw_level(tileset = Tileset.Tileset):
     screen.blit(sprite, (672, 444))
 
 def main():
-    # player character
+    # object
     player = Player.Player(100, 350)
+    flower_enemy = FlowerEnemy.FlowerEnemy(400, 350, player)
+
+    # tileset
     tileset = Tileset.Tileset()
+
     while True:
         # set fps
         delta_time = clock.tick(60)
 
         # set delta time of each object
         player.delta_time = delta_time
+        flower_enemy.delta_time = delta_time
 
         # update each object
         player.update()
+        flower_enemy.update()
 
         # set screen white for update display
         background = pygame.image.load("../sprites/map/background.png")
@@ -111,6 +117,7 @@ def main():
 
 
         draw(player)
+        draw(flower_enemy)
         draw_level(tileset)
 
         pygame.display.update()

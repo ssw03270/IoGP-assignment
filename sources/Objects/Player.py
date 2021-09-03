@@ -10,6 +10,7 @@ class Player(Object.Object):
         self.width = 44
         self.height = 20
         self.delta_time = 0
+        self.real_x = self.x + 35
 
         # player image
         self.spr_idle = pygame.image.load("../sprites/player/idle.png").convert_alpha()     # 0
@@ -139,6 +140,11 @@ class Player(Object.Object):
             if self.state_index == 1:
                 self.state_index = 0
                 self.is_attack_able = True
+
+        # set real x
+        self.real_x = self.x + 35
+        if self.direction:
+            self.real_x += 100
 
     def attack(self):
         # check combo
