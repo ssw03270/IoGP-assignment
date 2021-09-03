@@ -11,6 +11,7 @@ class FlowerEnemy(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
+        self.health = 10
 
         # flower enemy image
         self.spr_attack = pygame.image.load("../sprites/flowerEnemy/attack.png").convert_alpha()    # 0
@@ -35,6 +36,14 @@ class FlowerEnemy(Object.Object):
         self.is_attack_able = True
         self.damage = 2
 
+        # flower enemy hit
+        self.hit_delay = 0
+        self.hit_max_delay = 1000
+        self.is_hit_able = True
+
+        # palyer death
+        self.is_flower_enemy_death = False
+
         # flower enemy state
         self.state_index = 3
 
@@ -49,9 +58,14 @@ class FlowerEnemy(Object.Object):
         self.set_sprite()
 
     def update(self):
+        # hit delay counting
+        if not self.is_hit_able:
+            self.hit_delay += self.delta_time
         if not self.is_attack_able:
             self.attack_delay += self.delta_time
-        self.detected_player()
+        # if flower enemy doesn't death
+        if not self.is_flower_enemy_death:
+            self.detected_player()
 
     def set_sprite(self):
         lis = []
@@ -68,7 +82,7 @@ class FlowerEnemy(Object.Object):
         lis.clear()
 
         # state is hit
-        for i in range(0, 2):
+        for i in range(0, 6):
             lis.append(self.spr_hit.subsurface(0, i * self.spr_height, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
@@ -79,29 +93,62 @@ class FlowerEnemy(Object.Object):
         self.spr_list.append(lis[:])
 
     def draw_image(self):
-        # if current index over than max index
-        if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
-            # if player attack
-            if 0 == self.state_index:
-                self.state_index = 3
-            self.spr_index = 0
+        # if player live, playing animation
+        if not self.is_flower_enemy_death:
+            # if current index over than max index
+            if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
+                # if flower enemy attack
+                if self.state_index == 0:
+                    self.state_index = 3
+                # if flower enemy hit
+                elif self.state_index == 2:
+                    self.state_index = 3
+                self.spr_index = 0
 
-        sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
-        self.spr_index += 1 / self.spr_speed * self.delta_time
-        return sprite
-
+            sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+            self.spr_index += 1 / self.spr_speed * self.delta_time
+            return sprite
+        # if flower enemy death
+        else:
+            if math.floor(self.spr_index) <= len(self.spr_list[self.state_index]) - 1:
+                self.spr_index += 1 / self.spr_speed * self.delta_time
+            # animation finished
+            if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
+                self.spr_index = len(self.spr_list[self.state_index]) - 1
+            # update sprite
+            sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+            return sprite
     def attack(self):
-        # check attack able
-        if self.attack_delay >= self.attack_max_delay:
-            self.attack_delay = 0
-            self.is_attack_able = True
+        # if enemy flower doesn't death
+        if not self.is_flower_enemy_death:
+            # check attack able
+            if self.attack_delay >= self.attack_max_delay:
+                self.attack_delay = 0
+                self.is_attack_able = True
 
-        # player attack
-        if self.is_attack_able:
-            self.state_index = 0
-            pygame.mixer.Sound.play(self.sound_attack)
-            self.is_attack_able = False
-            self.player.hit(self.damage)
+            # player attack
+            if self.is_attack_able:
+                self.state_index = 0
+                pygame.mixer.Sound.play(self.sound_attack)
+                self.is_attack_able = False
+                self.player.hit(self.damage)
+
+    def hit(self, damage):
+        if not self.is_flower_enemy_death:
+            # check hit able
+            if self.hit_delay >= self.hit_max_delay:
+                self.hit_delay = 0
+                self.is_hit_able = True
+
+            if self.is_hit_able:
+                self.state_index = 2
+                self.health -= damage
+                self.is_hit_able = False
+                print(self.health)
+
+            if self.health <= 0:
+                self.state_index = 1
+                self.is_flower_enemy_death = True
 
     def detected_player(self):
         self.direction = self.player.real_x < self.real_x
@@ -111,3 +158,7 @@ class FlowerEnemy(Object.Object):
 
         if self.is_detected_player:
             self.attack()
+
+        if self.player.is_attacking:
+            if self.player.x < self.real_x and self.real_x < self.player.x + self.player.spr_width * 2:
+                self.hit(self.player.attack_damage)

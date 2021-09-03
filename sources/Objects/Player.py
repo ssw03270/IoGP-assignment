@@ -12,6 +12,7 @@ class Player(Object.Object):
         self.delta_time = 0
         self.real_x = self.x + 35
         self.health = 5
+        self.attack_damage = 3
 
         # player image
         self.spr_idle = pygame.image.load("../sprites/player/idle.png").convert_alpha()         # 0
@@ -47,6 +48,7 @@ class Player(Object.Object):
         self.attack_delay = 0
         self.attack_max_delay = 1000
         self.is_attack_able = True
+        self.is_attacking = False
 
         # player hit
         self.hit_delay = 0
@@ -81,7 +83,6 @@ class Player(Object.Object):
             self.move()
         else:
             self.sound_walk.stop()
-        print(self.delta_time)
 
     def set_sprite(self):
         lis = []
@@ -136,6 +137,8 @@ class Player(Object.Object):
                     self.state_index = 0
                     self.is_attack_able = True
                     self.is_move_able = True
+                    self.is_attacking = False
+                # if player hit
                 elif self.state_index == 5:
                     self.state_index = 0
                     self.is_move_able = True
@@ -224,6 +227,7 @@ class Player(Object.Object):
 
                 self.is_move_able = False
                 self.is_attack_able = False
+                self.is_attacking = True
                 self.attack_delay = 0
 
     def hit(self, damage):
