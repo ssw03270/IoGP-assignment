@@ -46,7 +46,7 @@ class FlowerEnemy(Object.Object):
         self.is_hit_able = True
 
         # palyer death
-        self.is_flower_enemy_death = False
+        self.is_enemy_die = False
 
         # flower enemy state
         self.state_index = 3
@@ -68,7 +68,7 @@ class FlowerEnemy(Object.Object):
         if not self.is_attack_able:
             self.attack_delay += self.delta_time
         # if flower enemy doesn't death
-        if not self.is_flower_enemy_death:
+        if not self.is_enemy_die:
             self.detected_player()
 
     def set_sprite(self):
@@ -98,7 +98,7 @@ class FlowerEnemy(Object.Object):
 
     def draw_image(self):
         # if player live, playing animation
-        if not self.is_flower_enemy_death:
+        if not self.is_enemy_die:
             # if current index over than max index
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 # if flower enemy attack
@@ -125,7 +125,7 @@ class FlowerEnemy(Object.Object):
 
     def attack(self):
         # if enemy flower doesn't death
-        if not self.is_flower_enemy_death:
+        if not self.is_enemy_die:
             # check attack able
             if self.attack_delay >= self.attack_max_delay:
                 self.attack_delay = 0
@@ -139,7 +139,7 @@ class FlowerEnemy(Object.Object):
                 self.player.hit(self.damage)
 
     def hit(self, damage):
-        if not self.is_flower_enemy_death:
+        if not self.is_enemy_die:
             # check hit able
             if self.hit_delay >= self.hit_max_delay:
                 self.hit_delay = 0
@@ -153,7 +153,7 @@ class FlowerEnemy(Object.Object):
 
             if self.health <= 0:
                 self.state_index = 1
-                self.is_flower_enemy_death = True
+                self.is_enemy_die = True
                 self.sound_death.play()
 
     def detected_player(self):

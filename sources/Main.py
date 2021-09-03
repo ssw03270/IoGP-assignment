@@ -86,8 +86,11 @@ def draw_level(tileset = Tileset.Tileset):
 def main():
     # object
     player = Player.Player(300, 355)
-    flower_enemy1 = FlowerEnemy.FlowerEnemy(500, 350, player)
-    flower_enemy2 = FlowerEnemy.FlowerEnemy(100, 350, player)
+
+    # level
+    levels = [[FlowerEnemy.FlowerEnemy(500, 350, player), FlowerEnemy.FlowerEnemy(100, 350, player)]]
+    level_index = 0
+    max_level_index = len(levels)
 
     # tileset
     tileset = Tileset.Tileset()
@@ -96,15 +99,24 @@ def main():
         # set fps
         delta_time = clock.tick(60)
 
+
+        # check level
+        is_all_enemy_die = True
+        for obj in levels[level_index]:
+            if not obj.is_enemy_die:
+                is_all_enemy_die = False
+        if is_all_enemy_die and level_index + 1 < max_level_index:
+            level_index += 1
+
         # set delta time of each object
         player.delta_time = delta_time
-        flower_enemy1.delta_time = delta_time
-        flower_enemy2.delta_time = delta_time
+        for obj in levels[level_index]:
+            obj.delta_time = delta_time
 
         # update each object
         player.update()
-        flower_enemy1.update()
-        flower_enemy2.update()
+        for obj in levels[level_index]:
+            obj.update()
 
         # set screen white for update display
         background = pygame.image.load("../sprites/map/background.png")
@@ -120,8 +132,8 @@ def main():
 
 
         draw(player)
-        draw(flower_enemy1)
-        draw(flower_enemy2)
+        for obj in levels[level_index]:
+            draw(obj)
         draw_level(tileset)
 
         pygame.display.update()
