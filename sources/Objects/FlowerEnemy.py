@@ -118,6 +118,7 @@ class FlowerEnemy(Object.Object):
             # update sprite
             sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             return sprite
+
     def attack(self):
         # if enemy flower doesn't death
         if not self.is_flower_enemy_death:
@@ -144,7 +145,6 @@ class FlowerEnemy(Object.Object):
                 self.state_index = 2
                 self.health -= damage
                 self.is_hit_able = False
-                print(self.health)
 
             if self.health <= 0:
                 self.state_index = 1

@@ -85,7 +85,7 @@ def draw_level(tileset = Tileset.Tileset):
 
 def main():
     # object
-    player = Player.Player(100, 350)
+    player = Player.Player(100, 355)
     flower_enemy = FlowerEnemy.FlowerEnemy(400, 350, player)
 
     # tileset
