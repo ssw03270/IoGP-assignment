@@ -70,10 +70,13 @@ class Player(Object.Object):
         self.set_sprite()
 
     def update(self):
+        # attack delay counting
+        self.attack_delay += self.delta_time
+        # hit delay counting
+        if not self.is_hit_able:
+            self.hit_delay += self.delta_time
+        # if player doesn't death
         if not self.is_player_death:
-            self.attack_delay += self.delta_time
-            if not self.is_hit_able:
-                self.hit_delay += self.delta_time
             # player move
             self.move()
         else:
@@ -112,7 +115,7 @@ class Player(Object.Object):
         lis.clear()
 
         # state is hit
-        for i in range(0, 2):
+        for i in range(0, 6):
             lis.append(self.spr_hit.subsurface(0, i * self.spr_height, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
@@ -127,32 +130,38 @@ class Player(Object.Object):
         if not self.is_player_death:
             # if current index over than max index
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
-                # if player not death
-                if not self.is_player_death:
-                    # if player attack
-                    if 2 <= self.state_index and self.state_index <= 4:
-                        self.state_index = 0
-                        self.is_attack_able = True
-                        self.is_move_able = True
-                    self.spr_index = 0
-
+                # if player attack
+                if 2 <= self.state_index and self.state_index <= 4:
+                    self.state_index = 0
+                    self.is_attack_able = True
+                    self.is_move_able = True
+                if self.state_index == 5:
+                    self.state_index = 0
+                    self.is_move_able = True
+                self.spr_index = 0
+            # update sprite
             sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             self.spr_index += 1 / self.spr_speed * self.delta_time
             return sprite
         # if player death
         else:
+            # animation not finished
             if math.floor(self.spr_index) <= len(self.spr_list[self.state_index]) - 1:
                 self.spr_index += 1 / self.spr_speed * self.delta_time
+            # animation finished
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 self.spr_index = len(self.spr_list[self.state_index]) - 1
+            # update sprite
             sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             return sprite
 
     def move(self):
+        # if player doesn't death
         if not self.is_player_death:
             # player move
             keys = pygame.key.get_pressed()
 
+            # if player move
             if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able:
                 self.state_index = 1
 
@@ -188,6 +197,7 @@ class Player(Object.Object):
                 self.real_x += 100
 
     def attack(self):
+        # if player doesn't death
         if not self.is_player_death:
             # check combo
             if self.attack_delay >= self.attack_max_delay:
@@ -226,6 +236,7 @@ class Player(Object.Object):
                 self.state_index = 5
                 self.health -= damage
                 self.is_hit_able = False
+                self.is_move_able = False
 
             if self.health <= 0:
                 self.state_index = 6
