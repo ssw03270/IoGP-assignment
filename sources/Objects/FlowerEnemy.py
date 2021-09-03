@@ -10,6 +10,7 @@ class FlowerEnemy(Object.Object):
         self.height = 20
         self.delta_time = 0
         self.real_x = self.x
+        self.direction = False
 
         # flower enemy image
         self.spr_attack = pygame.image.load("../sprites/flowerEnemy/attack.png").convert_alpha()    # 0
@@ -32,6 +33,7 @@ class FlowerEnemy(Object.Object):
         self.attack_delay = 0
         self.attack_max_delay = 5000
         self.is_attack_able = True
+        self.damage = 2
 
         # flower enemy state
         self.state_index = 3
@@ -84,7 +86,7 @@ class FlowerEnemy(Object.Object):
                 self.state_index = 3
             self.spr_index = 0
 
-        sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], False, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+        sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
         self.spr_index += 1 / self.spr_speed * self.delta_time
         return sprite
 
@@ -99,8 +101,11 @@ class FlowerEnemy(Object.Object):
             self.state_index = 0
             pygame.mixer.Sound.play(self.sound_attack)
             self.is_attack_able = False
+            self.player.hit(self.damage)
 
     def detected_player(self):
+        self.direction = self.player.real_x < self.real_x
+
         distance = math.fabs(self.player.real_x - self.real_x)
         self.is_detected_player = distance < self.max_distance
 

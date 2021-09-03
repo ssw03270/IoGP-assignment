@@ -11,13 +11,16 @@ class Player(Object.Object):
         self.height = 20
         self.delta_time = 0
         self.real_x = self.x + 35
+        self.health = 5
 
         # player image
-        self.spr_idle = pygame.image.load("../sprites/player/idle.png").convert_alpha()     # 0
-        self.spr_move = pygame.image.load("../sprites/player/move.png").convert_alpha()     # 1
-        self.spr_attack1 = pygame.image.load("../sprites/player/attack1.png").convert_alpha() # 2
-        self.spr_attack2 = pygame.image.load("../sprites/player/attack2.png").convert_alpha() # 3
-        self.spr_attack3 = pygame.image.load("../sprites/player/attack3.png").convert_alpha() # 4
+        self.spr_idle = pygame.image.load("../sprites/player/idle.png").convert_alpha()         # 0
+        self.spr_move = pygame.image.load("../sprites/player/move.png").convert_alpha()         # 1
+        self.spr_attack1 = pygame.image.load("../sprites/player/attack1.png").convert_alpha()   # 2
+        self.spr_attack2 = pygame.image.load("../sprites/player/attack2.png").convert_alpha()   # 3
+        self.spr_attack3 = pygame.image.load("../sprites/player/attack3.png").convert_alpha()   # 4
+        self.spr_hit = pygame.image.load("../sprites/player/hit.png").convert_alpha()           # 5
+        self.spr_death = pygame.image.load("../sprites/player/death.png").convert_alpha()       # 6
 
         # player sound
         self.sound_walk = pygame.mixer.Sound("../sounds/player/walk.mp3")
@@ -45,6 +48,14 @@ class Player(Object.Object):
         self.attack_max_delay = 1000
         self.is_attack_able = True
 
+        # player hit
+        self.hit_delay = 0
+        self.hit_max_delay = 500
+        self.is_hit_able = True
+
+        # palyer death
+        self.is_player_death = False
+
         # player state
         self.state_index = 0
 
@@ -59,9 +70,14 @@ class Player(Object.Object):
         self.set_sprite()
 
     def update(self):
-        self.attack_delay += self.delta_time
-        # player move
-        self.move()
+        if not self.is_player_death:
+            self.attack_delay += self.delta_time
+            if not self.is_hit_able:
+                self.hit_delay += self.delta_time
+            # player move
+            self.move()
+        else:
+            self.sound_walk.stop()
 
     def set_sprite(self):
         lis = []
@@ -93,83 +109,124 @@ class Player(Object.Object):
         for i in range(0, 9):
             lis.append(self.spr_attack3.subsurface(0, i * self.spr_height, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is hit
+        for i in range(0, 2):
+            lis.append(self.spr_hit.subsurface(0, i * self.spr_height, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is death
+        for i in range(0, 5):
+            lis.append(self.spr_death.subsurface(0, i * self.spr_height, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
 
     def draw_image(self):
-        # if current index over than max index
-        if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
-            # if player attack
-            if 2 <= self.state_index and self.state_index <= 4:
-                self.state_index = 0
-                self.is_attack_able = True
-                self.is_move_able = True
-            self.spr_index = 0
+        # if player live, playing animation
+        if not self.is_player_death:
+            # if current index over than max index
+            if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
+                # if player not death
+                if not self.is_player_death:
+                    # if player attack
+                    if 2 <= self.state_index and self.state_index <= 4:
+                        self.state_index = 0
+                        self.is_attack_able = True
+                        self.is_move_able = True
+                    self.spr_index = 0
 
-        sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
-        self.spr_index += 1 / self.spr_speed * self.delta_time
-        return sprite
+            sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+            self.spr_index += 1 / self.spr_speed * self.delta_time
+            return sprite
+        # if player death
+        else:
+            if math.floor(self.spr_index) <= len(self.spr_list[self.state_index]) - 1:
+                self.spr_index += 1 / self.spr_speed * self.delta_time
+            if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
+                self.spr_index = len(self.spr_list[self.state_index]) - 1
+            sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+            return sprite
 
     def move(self):
-        # player move
-        keys = pygame.key.get_pressed()
+        if not self.is_player_death:
+            # player move
+            keys = pygame.key.get_pressed()
 
-        if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able:
-            self.state_index = 1
+            if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able:
+                self.state_index = 1
 
-            # play foot step sound
-            if not self.is_move_sound_play:
-                self.sound_walk.play(-1, 0, 1000)
-                self.is_move_sound_play = True
+                # play foot step sound
+                if not self.is_move_sound_play:
+                    self.sound_walk.play(-1, 0, 1000)
+                    self.is_move_sound_play = True
 
-            if keys[pygame.K_RIGHT]:
-                self.x += self.move_speed * self.delta_time
+                if keys[pygame.K_RIGHT]:
+                    self.x += self.move_speed * self.delta_time
 
-                if self.direction:
-                    self.x = self.x + self.spr_width
-                    self.direction = False
-            if keys[pygame.K_LEFT]:
-                self.x -= self.move_speed * self.delta_time
-                if not self.direction:
-                    self.x = self.x - self.spr_width
-                    self.direction = True
-        else:
-            # set footstep sound
-            self.sound_walk.fadeout(500)
-            self.is_move_sound_play = False
+                    if self.direction:
+                        self.x = self.x + self.spr_width
+                        self.direction = False
+                if keys[pygame.K_LEFT]:
+                    self.x -= self.move_speed * self.delta_time
+                    if not self.direction:
+                        self.x = self.x - self.spr_width
+                        self.direction = True
+            else:
+                # set footstep sound
+                self.sound_walk.fadeout(500)
+                self.is_move_sound_play = False
 
-            # set sprite idle
-            if self.state_index == 1:
-                self.state_index = 0
-                self.is_attack_able = True
+                # set sprite idle
+                if self.state_index == 1:
+                    self.state_index = 0
+                    self.is_attack_able = True
 
-        # set real x
-        self.real_x = self.x + 35
-        if self.direction:
-            self.real_x += 100
+            # set real x
+            self.real_x = self.x + 35
+            if self.direction:
+                self.real_x += 100
 
     def attack(self):
-        # check combo
-        if self.attack_delay >= self.attack_max_delay:
-            self.attack_delay = 0
-            self.attack_combo = 0
-
-        # player attack
-        if self.is_attack_able:
-            if self.attack_combo == 0:
-                self.state_index = 2
-                self.attack_combo = 1
-                pygame.mixer.Sound.play(self.sound_attack1)
-
-            elif self.attack_combo == 1:
-                self.state_index = 3
-                self.attack_combo = 2
-                pygame.mixer.Sound.play(self.sound_attack2)
-
-            elif self.attack_combo == 2:
-                self.state_index = 4
+        if not self.is_player_death:
+            # check combo
+            if self.attack_delay >= self.attack_max_delay:
+                self.attack_delay = 0
                 self.attack_combo = 0
-                pygame.mixer.Sound.play(self.sound_attack3)
 
-            self.is_move_able = False
-            self.is_attack_able = False
-            self.attack_delay = 0
+            # player attack
+            if self.is_attack_able:
+                if self.attack_combo == 0:
+                    self.state_index = 2
+                    self.attack_combo = 1
+                    pygame.mixer.Sound.play(self.sound_attack1)
 
+                elif self.attack_combo == 1:
+                    self.state_index = 3
+                    self.attack_combo = 2
+                    pygame.mixer.Sound.play(self.sound_attack2)
+
+                elif self.attack_combo == 2:
+                    self.state_index = 4
+                    self.attack_combo = 0
+                    pygame.mixer.Sound.play(self.sound_attack3)
+
+                self.is_move_able = False
+                self.is_attack_able = False
+                self.attack_delay = 0
+
+    def hit(self, damage):
+        if not self.is_player_death:
+            # check hit able
+            if self.hit_delay >= self.hit_max_delay:
+                self.hit_delay = 0
+                self.is_hit_able = True
+
+            if self.is_hit_able:
+                self.state_index = 5
+                self.health -= damage
+                self.is_hit_able = False
+
+            if self.health <= 0:
+                self.state_index = 6
+                self.is_player_death = True
