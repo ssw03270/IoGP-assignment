@@ -22,7 +22,7 @@ gray = (59, 59, 59)
 # pygame display
 window_size = [720, 540]
 screen = pygame.display.set_mode(window_size)
-game_title = 'DarkestCave'
+game_title = 'Last Boss'
 pygame.display.set_caption(game_title)
 screen.fill(white)
 
