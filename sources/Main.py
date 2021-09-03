@@ -85,8 +85,9 @@ def draw_level(tileset = Tileset.Tileset):
 
 def main():
     # object
-    player = Player.Player(100, 355)
-    flower_enemy = FlowerEnemy.FlowerEnemy(400, 350, player)
+    player = Player.Player(300, 355)
+    flower_enemy1 = FlowerEnemy.FlowerEnemy(500, 350, player)
+    flower_enemy2 = FlowerEnemy.FlowerEnemy(100, 350, player)
 
     # tileset
     tileset = Tileset.Tileset()
@@ -97,11 +98,13 @@ def main():
 
         # set delta time of each object
         player.delta_time = delta_time
-        flower_enemy.delta_time = delta_time
+        flower_enemy1.delta_time = delta_time
+        flower_enemy2.delta_time = delta_time
 
         # update each object
         player.update()
-        flower_enemy.update()
+        flower_enemy1.update()
+        flower_enemy2.update()
 
         # set screen white for update display
         background = pygame.image.load("../sprites/map/background.png")
@@ -117,7 +120,8 @@ def main():
 
 
         draw(player)
-        draw(flower_enemy)
+        draw(flower_enemy1)
+        draw(flower_enemy2)
         draw_level(tileset)
 
         pygame.display.update()
