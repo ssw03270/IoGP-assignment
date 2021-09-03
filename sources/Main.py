@@ -3,7 +3,7 @@
 """
 
 import pygame, sys
-from sources.Objects import Object, Player, FlowerEnemy
+from sources.Objects import Object, Player, FlowerEnemy, UiHealth
 from sources import Tileset
 
 clock = pygame.time.Clock()
@@ -86,9 +86,10 @@ def draw_level(tileset = Tileset.Tileset):
 def main():
     # object
     player = Player.Player(300, 355)
+    healths = [UiHealth.UiHealth(50, 100, player, 1), UiHealth.UiHealth(90, 100, player, 2), UiHealth.UiHealth(130, 100, player, 3), UiHealth.UiHealth(170, 100, player,4), UiHealth.UiHealth(210, 100, player, 5)]
 
     # level
-    levels = [[FlowerEnemy.FlowerEnemy(500, 350, player), FlowerEnemy.FlowerEnemy(100, 350, player)]]
+    levels = [[FlowerEnemy.FlowerEnemy(500, 350, player), FlowerEnemy.FlowerEnemy(100, 350, player)], []]
     level_index = 0
     max_level_index = len(levels)
 
@@ -112,6 +113,8 @@ def main():
         player.delta_time = delta_time
         for obj in levels[level_index]:
             obj.delta_time = delta_time
+        for health in healths:
+            health.delta_time = delta_time
 
         # update each object
         player.update()
@@ -134,6 +137,8 @@ def main():
         draw(player)
         for obj in levels[level_index]:
             draw(obj)
+        for health in healths:
+            draw(health)
         draw_level(tileset)
 
         pygame.display.update()
