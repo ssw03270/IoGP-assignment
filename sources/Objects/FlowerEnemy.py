@@ -21,6 +21,7 @@ class FlowerEnemy(Object.Object):
 
         # flower enemy sound
         self.sound_attack = pygame.mixer.Sound("../sounds/flowerEnemy/attack.mp3")
+        self.sound_death = pygame.mixer.Sound("../sounds/flowerEnemy/death.mp3")
 
         # set sound volume
         self.sound_attack.set_volume(0.5)
@@ -149,6 +150,7 @@ class FlowerEnemy(Object.Object):
             if self.health <= 0:
                 self.state_index = 1
                 self.is_flower_enemy_death = True
+                self.sound_death.play()
 
     def detected_player(self):
         self.direction = self.player.real_x < self.real_x
