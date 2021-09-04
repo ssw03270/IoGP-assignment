@@ -144,9 +144,13 @@ class Player(Object.Object):
                     self.is_move_able = True
                 self.spr_index = 0
             # update sprite
-            sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+            sprite = pygame.transform.scale(
+                pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction,
+                                      False),
+                (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             self.spr_index += 1 / self.spr_speed * self.delta_time
             return sprite
+
         # if player death
         else:
             # animation not finished
@@ -156,7 +160,10 @@ class Player(Object.Object):
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 self.spr_index = len(self.spr_list[self.state_index]) - 1
             # update sprite
-            sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+            sprite = pygame.transform.scale(
+                pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction,
+                                      False),
+                (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             return sprite
 
     def move(self):

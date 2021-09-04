@@ -32,7 +32,7 @@ class FlowerEnemy(Object.Object):
         # check player detect
         self.player = player
         self.is_detected_player = False
-        self.max_distance = 30
+        self.max_distance = 60
 
         # flower enemy attack
         self.attack_delay = 0
@@ -108,10 +108,13 @@ class FlowerEnemy(Object.Object):
                 elif self.state_index == 2:
                     self.state_index = 3
                 self.spr_index = 0
-
-            sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+            sprite = pygame.transform.scale(
+                pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction,
+                                      False),
+                (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             self.spr_index += 1 / self.spr_speed * self.delta_time
             return sprite
+
         # if flower enemy death
         else:
             if math.floor(self.spr_index) <= len(self.spr_list[self.state_index]) - 1:
@@ -120,7 +123,10 @@ class FlowerEnemy(Object.Object):
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 self.spr_index = len(self.spr_list[self.state_index]) - 1
             # update sprite
-            sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+            sprite = pygame.transform.scale(
+                pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction,
+                                      False),
+                (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             return sprite
 
     def attack(self):

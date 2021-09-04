@@ -47,7 +47,9 @@ class UiHealth(Object.Object):
         if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
             self.spr_index = len(self.spr_list[self.state_index]) - 1
 
-        sprite = pygame.transform.scale(pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], False, False), (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+        sprite = pygame.transform.scale(
+            pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], False, False),
+            (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
         if self.player.health < self.health_index:
             self.spr_index += 1 / self.spr_speed * self.delta_time
         return sprite
