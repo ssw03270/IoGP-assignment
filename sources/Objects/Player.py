@@ -49,6 +49,7 @@ class Player(Object.Object):
         self.is_move_able = True
 
         # player attack
+        self.attack_range = 120
         self.attack_combo = 0
         self.attack_delay = 0
         self.attack_max_delay = 1000
@@ -73,6 +74,8 @@ class Player(Object.Object):
         self.spr_index = 0
         self.spr_size = 3
         self.spr_list = []
+        self.spr_x = self.x + self.spr_width / 2 * self.spr_size
+        self.spr_y = self.x + self.spr_height / 2 * self.spr_size
 
         self.set_sprite()
 
@@ -192,11 +195,13 @@ class Player(Object.Object):
                     if self.direction:
                         self.x = self.x + self.spr_width
                         self.direction = False
+                        self.attack_range *= -1
                 if keys[pygame.K_LEFT]:
                     self.x -= self.move_speed * self.delta_time
                     if not self.direction:
                         self.x = self.x - self.spr_width
                         self.direction = True
+                        self.attack_range *= -1
             else:
                 # set footstep sound
                 self.sound_walk.fadeout(500)
@@ -207,10 +212,12 @@ class Player(Object.Object):
                     self.state_index = 0
                     self.is_attack_able = True
 
-            # set real x
-            self.real_x = self.x + 35
+            # set spr x
+            self.spr_x = self.x - 32
+            self.spr_y = self.x
+
             if self.direction:
-                self.real_x += 100
+                self.spr_x += 88
 
     def attack(self):
         # if player doesn't death

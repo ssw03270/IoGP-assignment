@@ -3,7 +3,7 @@
 """
 
 import pygame, sys
-from sources.Objects import Object, Player, FlowerEnemy, UiHealth, UiDied
+from sources.Objects import Object, Player, FlowerEnemy, UiHealth, UiDied, Skeleton
 from sources import Tileset
 
 clock = pygame.time.Clock()
@@ -36,7 +36,7 @@ def draw(object = Object.Object):
     y = object.y
 
     sprite = object.draw_image()
-    screen.blit(sprite, (x, y))
+    screen.blit(sprite, (x - object.spr_width / 2 * object.spr_size, y - object.spr_height / 2 * object.spr_size))
 
 def draw_level(tileset = Tileset.Tileset):
     tile_x = 2
@@ -85,14 +85,14 @@ def draw_level(tileset = Tileset.Tileset):
 
 def main():
     # object
-    player = Player.Player(300, 355)
+    player = Player.Player(300, 400)
     healths = [UiHealth.UiHealth(50, 100, player, 1), UiHealth.UiHealth(90, 100, player, 2),
                UiHealth.UiHealth(130, 100, player, 3), UiHealth.UiHealth(170, 100, player, 4),
                UiHealth.UiHealth(210, 100, player, 5)]
     died = UiDied.UiDied(0, 0, player)
 
     # level
-    levels = [[FlowerEnemy.FlowerEnemy(500, 350, player), FlowerEnemy.FlowerEnemy(100, 350, player)], []]
+    levels = [[FlowerEnemy.FlowerEnemy(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
     level_index = 0
     max_level_index = len(levels)
 
@@ -139,11 +139,10 @@ def main():
                     healths = [UiHealth.UiHealth(50, 100, player, 1), UiHealth.UiHealth(90, 100, player, 2),
                                UiHealth.UiHealth(130, 100, player, 3), UiHealth.UiHealth(170, 100, player, 4),
                                UiHealth.UiHealth(210, 100, player, 5)]
-                    died = UiDied.UiDied(0, 0, player)
+                    died = UiDied.UiDied(360, 270, player)
 
                     # level
-                    levels = [[FlowerEnemy.FlowerEnemy(500, 350, player), FlowerEnemy.FlowerEnemy(100, 350, player)],
-                              []]
+                    levels = [[FlowerEnemy.FlowerEnemy(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
                     level_index = 0
 
         draw(player)
@@ -154,6 +153,8 @@ def main():
         draw_level(tileset)
         if player.is_player_death:
             draw(died)
+
+        pygame.draw.rect(screen, red, pygame.Rect(500, 400, 3, 3), 2)
 
         pygame.display.update()
 
