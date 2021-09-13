@@ -35,6 +35,11 @@ class Player(Object.Object):
         self.sound_attack2.set_volume(0.3)
         self.sound_attack3.set_volume(0.2)
 
+        # playing background music
+        pygame.mixer.music.load("../sounds/player/bgm.mp3")
+        pygame.mixer.music.play()
+        pygame.mixer.music.set_volume(0.15)
+
         # about sound
         self.is_move_sound_play = False
 
@@ -55,7 +60,7 @@ class Player(Object.Object):
         self.hit_max_delay = 1000
         self.is_hit_able = True
 
-        # palyer death
+        # player death
         self.is_player_death = False
 
         # player state
