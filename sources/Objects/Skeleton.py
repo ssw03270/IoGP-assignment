@@ -24,20 +24,30 @@ class Skeleton(Object.Object):
         self.sound_attack = pygame.mixer.Sound("../sounds/Skeleton/Attack.mp3")
         self.sound_death = pygame.mixer.Sound("../sounds/Skeleton/Death.mp3")
         self.sound_hit = pygame.mixer.Sound("../sounds/Skeleton/Hit.mp3")
+        self.sound_walk = pygame.mixer.Sound("../sounds/Skeleton/Walk.mp3")
 
         # set sound volume
         self.sound_attack.set_volume(0.2)
         self.sound_death.set_volume(0.2)
         self.sound_hit.set_volume(0.2)
+        self.sound_walk.set_volume(0.2)
 
         # check player detect
         self.player = player
         self.is_detected_player = False
         self.max_distance = 60
 
+        # about move
+        self.is_move_sound_play = False
+        self.is_move = False
+        self.is_move_able = True
+        self.move_speed = 0.1
+        self.move_delay = 0
+        self.move_max_delay = 1000
+
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 5000
+        self.attack_max_delay = 1000
         self.is_attack_able = True
         self.damage = 2
 
@@ -70,9 +80,12 @@ class Skeleton(Object.Object):
             self.hit_delay += self.delta_time
         if not self.is_attack_able:
             self.attack_delay += self.delta_time
+        if not self.is_move_able:
+            self.move_delay += self.delta_time
         # if flower enemy doesn't death
         if not self.is_enemy_die:
             self.detected_player()
+            self.move()
 
     def set_sprite(self):
         lis = []
@@ -160,12 +173,17 @@ class Skeleton(Object.Object):
             if self.hit_delay >= self.hit_max_delay:
                 self.hit_delay = 0
                 self.is_hit_able = True
+                self.is_move_able = True
 
             if self.is_hit_able:
                 self.state_index = 4
                 self.health -= damage
                 self.is_hit_able = False
                 self.sound_hit.play()
+                self.move_delay = 0
+                self.is_move_able = False
+                self.attack_delay = 0
+                self.is_attack_able = False
 
             if self.health <= 0:
                 self.state_index = 3
@@ -179,9 +197,45 @@ class Skeleton(Object.Object):
         self.is_detected_player = distance < self.max_distance
 
         if self.is_detected_player:
+            self.is_move = False
             self.attack()
+        else:
+            self.is_move = True
 
         if self.player.is_attacking:
             if min(self.player.spr_x, self.player.spr_x + self.player.attack_range) < self.spr_x and self.spr_x < max(
                     self.player.spr_x, self.player.spr_x + self.player.attack_range):
                 self.hit(self.player.attack_damage)
+
+    def move(self):
+        # move delay
+        if self.move_delay >= self.move_max_delay:
+            self.move_delay = 0
+            self.is_move_able = True
+
+        # if enemy is not attacking
+        if self.is_move and self.is_move_able:
+            # enemy move
+            self.state_index = 1
+
+            # enemy foot step sound
+            if not self.is_move_sound_play:
+                self.sound_walk.play(-1, 0, 1000)
+                self.is_move_sound_play = True
+
+            # player position is right
+            if not self.direction:
+                self.x += self.move_speed * self.delta_time
+            # player position is left
+            else:
+                self.x -= self.move_speed * self.delta_time
+
+            self.spr_x = self.x
+        else:
+            # set footstep sound
+            self.sound_walk.fadeout(500)
+            self.is_move_sound_play = False
+
+            # set sprite idle
+            if self.state_index == 1:
+                self.state_index = 0

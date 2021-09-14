@@ -38,7 +38,7 @@ class Player(Object.Object):
         # playing background music
         pygame.mixer.music.load("../sounds/player/bgm.mp3")
         pygame.mixer.music.play()
-        pygame.mixer.music.set_volume(0.15)
+        pygame.mixer.music.set_volume(0.05)
 
         # about sound
         self.is_move_sound_play = False

@@ -86,13 +86,13 @@ def draw_level(tileset = Tileset.Tileset):
 def main():
     # object
     player = Player.Player(300, 400)
-    healths = [UiHealth.UiHealth(50, 100, player, 1), UiHealth.UiHealth(90, 100, player, 2),
-               UiHealth.UiHealth(130, 100, player, 3), UiHealth.UiHealth(170, 100, player, 4),
-               UiHealth.UiHealth(210, 100, player, 5)]
-    died = UiDied.UiDied(0, 0, player)
+    healths = [UiHealth.UiHealth(66, 116, player, 1), UiHealth.UiHealth(106, 116, player, 2),
+               UiHealth.UiHealth(146, 116, player, 3), UiHealth.UiHealth(186, 116, player, 4),
+               UiHealth.UiHealth(226, 116, player, 5)]
+    died = UiDied.UiDied(360, 270, player)
 
     # level
-    levels = [[FlowerEnemy.FlowerEnemy(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
+    levels = [[Skeleton.Skeleton(500, 400, player), FlowerEnemy.FlowerEnemy(100, 400, player)], [Skeleton.Skeleton(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
     level_index = 0
     max_level_index = len(levels)
 
