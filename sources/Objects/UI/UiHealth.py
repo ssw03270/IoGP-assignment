@@ -1,6 +1,6 @@
 import pygame
 import math
-from . import Object, Player
+from sources.Objects import Object, Player
 
 class UiHealth(Object.Object):
     def __init__(self, x, y, player = Player.Player, health_index = int):

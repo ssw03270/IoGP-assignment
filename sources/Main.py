@@ -3,7 +3,9 @@
 """
 
 import pygame, sys
-from sources.Objects import Object, Player, FlowerEnemy, UiHealth, UiDied, Skeleton
+from sources.Objects import Object, Player
+from sources.Objects.UI import UiDied, UiHealth
+from sources.Objects.Enemy import FlowerEnemy, Skeleton
 from sources import Tileset
 
 clock = pygame.time.Clock()
@@ -92,7 +94,8 @@ def main():
     died = UiDied.UiDied(360, 270, player)
 
     # level
-    levels = [[Skeleton.Skeleton(500, 400, player), FlowerEnemy.FlowerEnemy(100, 400, player)], [Skeleton.Skeleton(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
+    levels = [[Skeleton.Skeleton(500, 400, player), FlowerEnemy.FlowerEnemy(100, 400, player)], [
+        Skeleton.Skeleton(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
     level_index = 0
     max_level_index = len(levels)
 
