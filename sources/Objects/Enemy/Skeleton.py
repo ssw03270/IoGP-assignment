@@ -11,7 +11,7 @@ class Skeleton(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
-        self.health = 10
+        self.health = 3
 
         # flower enemy image
         self.spr_idle = pygame.image.load("../sprites/Skeleton/Idle.png").convert_alpha()        # 0
@@ -29,7 +29,7 @@ class Skeleton(Object.Object):
         # set sound volume
         self.sound_attack.set_volume(0.2)
         self.sound_death.set_volume(0.2)
-        self.sound_hit.set_volume(0.2)
+        self.sound_hit.set_volume(0.1)
         self.sound_walk.set_volume(0.2)
 
         # check player detect
@@ -47,7 +47,7 @@ class Skeleton(Object.Object):
 
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 1000
+        self.attack_max_delay = 2500
         self.is_attack_able = True
         self.damage = 2
 

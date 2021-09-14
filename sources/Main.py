@@ -3,9 +3,10 @@
 """
 
 import pygame, sys
+import time
 from sources.Objects import Object, Player
 from sources.Objects.UI import UiDied, UiHealth
-from sources.Objects.Enemy import FlowerEnemy, Skeleton
+from sources.Objects.Enemy import FlowerEnemy, Skeleton, Goblin
 from sources import Tileset
 
 clock = pygame.time.Clock()
@@ -94,17 +95,24 @@ def main():
     died = UiDied.UiDied(360, 270, player)
 
     # level
-    levels = [[Skeleton.Skeleton(500, 400, player), FlowerEnemy.FlowerEnemy(100, 400, player)], [
-        Skeleton.Skeleton(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
+    levels = [[FlowerEnemy.FlowerEnemy(500, 400, player)],
+              [Goblin.Goblin(-100, 400, player)],
+              [Skeleton.Skeleton(800, 400, player)],
+              []]
+
     level_index = 0
     max_level_index = len(levels)
+    next_level_delay = 0
+    next_level_max_delay = 1000
+    is_next_level_able = False
 
     # tileset
     tileset = Tileset.Tileset()
 
     while True:
         # set fps
-        delta_time = clock.tick(60)
+        delta_time = clock.tick(30)
+        print(delta_time)
 
         # check level
         is_all_enemy_die = True
@@ -112,7 +120,15 @@ def main():
             if not obj.is_enemy_die:
                 is_all_enemy_die = False
         if is_all_enemy_die and level_index + 1 < max_level_index:
-            level_index += 1
+            is_next_level_able += True
+
+        # is time to move next level
+        if is_next_level_able:
+            next_level_delay += delta_time
+            if next_level_delay > next_level_max_delay:
+                next_level_delay = 0
+                is_next_level_able = False
+                level_index += 1
 
         # set delta time of each object
         player.delta_time = delta_time
@@ -148,6 +164,7 @@ def main():
                     levels = [[FlowerEnemy.FlowerEnemy(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
                     level_index = 0
 
+        # draw object
         draw(player)
         for obj in levels[level_index]:
             draw(obj)
@@ -156,8 +173,6 @@ def main():
         draw_level(tileset)
         if player.is_player_death:
             draw(died)
-
-        pygame.draw.rect(screen, red, pygame.Rect(500, 400, 3, 3), 2)
 
         pygame.display.update()
 

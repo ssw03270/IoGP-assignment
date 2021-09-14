@@ -12,7 +12,7 @@ class Player(Object.Object):
         self.delta_time = 0
         self.real_x = self.x + 35
         self.health = 5
-        self.attack_damage = 3
+        self.attack_damage = 1
 
         # player image
         self.spr_idle = pygame.image.load("../sprites/player/idle.png").convert_alpha()         # 0
@@ -31,9 +31,9 @@ class Player(Object.Object):
 
         # set sound volume
         self.sound_walk.set_volume(0.5)
-        self.sound_attack1.set_volume(0.5)
-        self.sound_attack2.set_volume(0.3)
-        self.sound_attack3.set_volume(0.2)
+        self.sound_attack1.set_volume(0.4)
+        self.sound_attack2.set_volume(0.2)
+        self.sound_attack3.set_volume(0.1)
 
         # playing background music
         pygame.mixer.music.load("../sounds/player/bgm.mp3")
