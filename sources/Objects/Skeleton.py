@@ -22,13 +22,13 @@ class Skeleton(Object.Object):
 
         # flower enemy sound
         self.sound_attack = pygame.mixer.Sound("../sounds/Skeleton/Attack.mp3")
-        self.sound_death = pygame.mixer.Sound("../sounds/flowerEnemy/death.mp3")
-        self.sound_hit = pygame.mixer.Sound("../sounds/flowerEnemy/hit.mp3")
+        self.sound_death = pygame.mixer.Sound("../sounds/Skeleton/Death.mp3")
+        self.sound_hit = pygame.mixer.Sound("../sounds/Skeleton/Hit.mp3")
 
         # set sound volume
         self.sound_attack.set_volume(0.2)
-        self.sound_death.set_volume(0.5)
-        self.sound_hit.set_volume(0.5)
+        self.sound_death.set_volume(0.2)
+        self.sound_hit.set_volume(0.2)
 
         # check player detect
         self.player = player
