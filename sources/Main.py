@@ -112,7 +112,6 @@ def main():
     while True:
         # set fps
         delta_time = clock.tick(30)
-        print(delta_time)
 
         # check level
         is_all_enemy_die = True

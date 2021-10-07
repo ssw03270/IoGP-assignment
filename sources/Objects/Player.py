@@ -61,6 +61,18 @@ class Player(Object.Object):
         self.hit_max_delay = 1000
         self.is_hit_able = True
 
+        # player dash
+        self.dash_range = 200
+        self.dash_delay = 0
+        self.dash_max_delay = 1000
+        self.is_dash_able = True
+
+        # player invincibility
+        self.invincibility_delay = 0
+        self.invincibility_max_delay = 500
+        self.is_invincibility_able = False
+        self.is_invincibility = False
+
         # player death
         self.is_player_death = False
 
@@ -85,10 +97,13 @@ class Player(Object.Object):
         # hit delay counting
         if not self.is_hit_able:
             self.hit_delay += self.delta_time
+        if not self.is_dash_able:
+            self.dash_delay += self.delta_time
         # if player doesn't death
         if not self.is_player_death:
             # player move
             self.move()
+            self.dash()
         else:
             self.sound_walk.stop()
 
@@ -157,6 +172,7 @@ class Player(Object.Object):
                                       False),
                 (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             self.spr_index += 1 / self.spr_speed * self.delta_time
+
             return sprite
 
         # if player death
@@ -250,7 +266,7 @@ class Player(Object.Object):
                 self.attack_delay = 0
 
     def hit(self, damage):
-        if not self.is_player_death:
+        if not self.is_player_death and not self.is_invincibility:
             # check hit able
             if self.hit_delay >= self.hit_max_delay:
                 self.hit_delay = 0
@@ -265,3 +281,32 @@ class Player(Object.Object):
             if self.health <= 0:
                 self.state_index = 6
                 self.is_player_death = True
+
+    def dash(self):
+        if not self.is_player_death:
+            # check dash able
+            if self.dash_delay >= self.dash_max_delay:
+                self.dash_delay = 0
+                self.is_dash_able = True
+
+            # if player dash
+            keys = pygame.key.get_pressed()
+            if (keys[pygame.K_LSHIFT]) and self.is_dash_able:
+                if not self.direction:
+                    self.x += self.dash_range
+                else:
+                    self.x -= self.dash_range
+                self.is_dash_able = False
+                self.is_invincibility_able = True
+
+            # invincibility time
+            if self.is_invincibility_able:
+                self.is_invincibility = True
+                self.is_invincibility_able = False
+                self.invincibility_delay = 0
+
+            if self.is_invincibility:
+                self.invincibility_delay += self.delta_time
+
+            if self.invincibility_delay > self.invincibility_max_delay:
+                self.is_invincibility = False
