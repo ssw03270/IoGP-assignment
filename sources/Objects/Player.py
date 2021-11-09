@@ -62,7 +62,9 @@ class Player(Object.Object):
         self.is_hit_able = True
 
         # player dash
-        self.dash_range = 200
+        self.dash_point = 10
+        self.dash_range = 0
+        self.dash_max_range = 100
         self.dash_delay = 0
         self.dash_max_delay = 1000
         self.is_dash_able = True
@@ -82,7 +84,7 @@ class Player(Object.Object):
         # sprite information
         self.spr_width = 88
         self.spr_height = 30
-        self.spr_speed = 100
+        self.spr_speed = 80
         self.spr_index = 0
         self.spr_size = 3
         self.spr_list = []
@@ -172,7 +174,7 @@ class Player(Object.Object):
                                       False),
                 (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             self.spr_index += 1 / self.spr_speed * self.delta_time
-
+            print(1 / self.spr_speed * self.delta_time)
             return sprite
 
         # if player death
@@ -245,6 +247,8 @@ class Player(Object.Object):
 
             # player attack
             if self.is_attack_able:
+                self.spr_index = 0
+
                 if self.attack_combo == 0:
                     self.state_index = 2
                     self.attack_combo = 1
@@ -292,18 +296,23 @@ class Player(Object.Object):
             # if player dash
             keys = pygame.key.get_pressed()
             if (keys[pygame.K_LSHIFT]) and self.is_dash_able:
-                if not self.direction:
-                    self.x += self.dash_range
-                else:
-                    self.x -= self.dash_range
                 self.is_dash_able = False
                 self.is_invincibility_able = True
+                self.dash_range = 0
 
             # invincibility time
             if self.is_invincibility_able:
-                self.is_invincibility = True
-                self.is_invincibility_able = False
-                self.invincibility_delay = 0
+                if not self.direction:
+                    self.x += self.dash_point
+                else:
+                    self.x -= self.dash_point
+                self.dash_range += self.dash_point
+
+                # if dash range is over than max range
+                if self.dash_range > self.dash_max_range:
+                    self.is_invincibility = True
+                    self.is_invincibility_able = False
+                    self.invincibility_delay = 0
 
             if self.is_invincibility:
                 self.invincibility_delay += self.delta_time
