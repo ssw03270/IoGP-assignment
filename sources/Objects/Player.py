@@ -70,8 +70,6 @@ class Player(Object.Object):
         self.is_dash_able = True
 
         # player invincibility
-        self.invincibility_delay = 0
-        self.invincibility_max_delay = 500
         self.is_invincibility_able = False
         self.is_invincibility = False
 
@@ -94,6 +92,8 @@ class Player(Object.Object):
         self.set_sprite()
 
     def update(self):
+        if self.is_invincibility:
+            print(self.is_invincibility)
         # attack delay counting
         self.attack_delay += self.delta_time
         # hit delay counting
@@ -174,7 +174,7 @@ class Player(Object.Object):
                                       False),
                 (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             self.spr_index += 1 / self.spr_speed * self.delta_time
-            print(1 / self.spr_speed * self.delta_time)
+
             return sprite
 
         # if player death
@@ -199,7 +199,7 @@ class Player(Object.Object):
             keys = pygame.key.get_pressed()
 
             # if player move
-            if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able:
+            if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able and not self.is_invincibility_able:
                 self.state_index = 1
 
                 # play foot step sound
@@ -297,6 +297,7 @@ class Player(Object.Object):
             keys = pygame.key.get_pressed()
             if (keys[pygame.K_LSHIFT]) and self.is_dash_able:
                 self.is_dash_able = False
+                self.is_invincibility = True
                 self.is_invincibility_able = True
                 self.dash_range = 0
 
@@ -310,12 +311,5 @@ class Player(Object.Object):
 
                 # if dash range is over than max range
                 if self.dash_range > self.dash_max_range:
-                    self.is_invincibility = True
                     self.is_invincibility_able = False
-                    self.invincibility_delay = 0
-
-            if self.is_invincibility:
-                self.invincibility_delay += self.delta_time
-
-            if self.invincibility_delay > self.invincibility_max_delay:
-                self.is_invincibility = False
+                    self.is_invincibility = False
