@@ -12,7 +12,7 @@ class Player(Object.Object):
         self.delta_time = 0
         self.real_x = self.x + 35
         self.health = 5
-        self.attack_damage = 1
+        self.attack_damage = 10
 
         # player image
         self.spr_idle = pygame.image.load("../sprites/player/idle.png").convert_alpha()         # 0

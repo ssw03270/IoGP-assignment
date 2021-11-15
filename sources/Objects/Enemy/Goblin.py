@@ -159,6 +159,7 @@ class Goblin(Object.Object):
             if self.attack_delay >= self.attack_max_delay:
                 self.attack_delay = 0
                 self.is_attack_able = True
+                self.is_move_able = True
 
             # player attack
             if self.is_attack_able:
@@ -166,6 +167,7 @@ class Goblin(Object.Object):
                 self.spr_index = 0
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
+                self.is_move_able = False
                 self.player.hit(self.damage)
 
     def hit(self, damage):
@@ -194,7 +196,8 @@ class Goblin(Object.Object):
                 self.sound_death.play()
 
     def detected_player(self):
-        self.direction = self.player.spr_x < self.spr_x
+        if self.is_move_able:
+            self.direction = self.player.spr_x < self.spr_x
 
         distance = math.fabs(self.player.spr_x - self.spr_x)
         self.is_detected_player = distance < self.max_distance
