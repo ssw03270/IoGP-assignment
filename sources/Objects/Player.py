@@ -278,12 +278,14 @@ class Player(Object.Object):
 
             if self.is_hit_able:
                 self.state_index = 5
+                self.spr_index = 0
                 self.health -= damage
                 self.is_hit_able = False
                 self.is_move_able = False
 
             if self.health <= 0:
                 self.state_index = 6
+                self.spr_index = 0
                 self.is_player_death = True
 
     def dash(self):

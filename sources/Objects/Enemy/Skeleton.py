@@ -163,6 +163,7 @@ class Skeleton(Object.Object):
             # player attack
             if self.is_attack_able:
                 self.state_index = 2
+                self.spr_index = 0
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
                 self.player.hit(self.damage)
@@ -177,6 +178,7 @@ class Skeleton(Object.Object):
 
             if self.is_hit_able:
                 self.state_index = 4
+                self.spr_index = 0
                 self.health -= damage
                 self.is_hit_able = False
                 self.sound_hit.play()
@@ -187,6 +189,7 @@ class Skeleton(Object.Object):
 
             if self.health <= 0:
                 self.state_index = 3
+                self.spr_index = 0
                 self.is_enemy_die = True
                 self.sound_death.play()
 
