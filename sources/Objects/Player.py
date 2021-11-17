@@ -62,12 +62,19 @@ class Player(Object.Object):
         self.is_hit_able = True
 
         # player dash
-        self.dash_point = 10
+        self.dash_point = 15
         self.dash_range = 0
-        self.dash_max_range = 100
+        self.dash_max_range = 150
         self.dash_delay = 0
         self.dash_max_delay = 1000
         self.is_dash_able = True
+
+        # player jump
+        self.is_jump_able = True
+        self.jump_speed = 100
+        self.jump_point = 0
+        self.jump_start_point = self.y
+        self.jump_max_range = math.sin(math.pi) * self.jump_speed
 
         # player invincibility
         self.is_invincibility_able = False
@@ -195,6 +202,17 @@ class Player(Object.Object):
     def move(self):
         # if player doesn't death
         if not self.is_player_death:
+
+            # player jump
+            if not self.is_jump_able:
+                self.y = self.jump_start_point + -1 * math.sin(self.jump_point) * self.jump_speed
+                self.jump_point += math.pi / self.delta_time * 2
+
+            if self.jump_point > math.pi:
+                self.is_jump_able = True
+                self.jump_point = 0
+                self.y = self.jump_start_point
+
             # player move
             keys = pygame.key.get_pressed()
 
@@ -315,3 +333,8 @@ class Player(Object.Object):
                 if self.dash_range > self.dash_max_range:
                     self.is_invincibility_able = False
                     self.is_invincibility = False
+    def jump(self):
+        if not self.is_player_death:
+            if self.is_jump_able:
+                self.is_jump_able = False
+

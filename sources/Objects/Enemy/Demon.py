@@ -136,7 +136,6 @@ class Demon(Object.Object):
                                       False),
                 (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             self.spr_index += 1 / self.spr_speed * self.delta_time
-            print(self.spr_index)
             return sprite
 
         # if flower enemy death

@@ -153,6 +153,8 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LCTRL:
                     player.attack()
+                if event.key == pygame.K_SPACE:
+                    player.jump()
                 if event.key == pygame.K_r and player.is_player_death:
                     player = Player.Player(300, 355)
                     healths = [UiHealth.UiHealth(50, 100, player, 1), UiHealth.UiHealth(90, 100, player, 2),
