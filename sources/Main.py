@@ -43,50 +43,18 @@ def draw(object = Object.Object):
     sprite = object.draw_image()
     screen.blit(sprite, (x - object.spr_width / 2 * object.spr_size, y - object.spr_height / 2 * object.spr_size))
 
-def draw_level(tileset = Tileset.Tileset):
-    tile_x = 2
-    tlie_y = 0
-
-    # draw border line
-    for x in range(0, 15):
-        sprite = tileset.draw_image(2, 10)
-        screen.blit(sprite, (x * 48, 0))
-        screen.blit(sprite, (x * 48, 492))
-
-    # for y in range(1, 13):
-    #     sprite = tileset.draw_image(2, 10)
-    #     screen.blit(sprite, (0, y * 48))
-    #     screen.blit(sprite, (672, y * 48))
-
-    # draw up
-    for x in range (1, 14):
-        if tile_x > 6 and tlie_y == 0:
-            tlie_y = 2
-        if tile_x > 13:
-            tile_x = 2
-            tlie_y = 0
-
-        sprite = tileset.draw_image(tile_x, tlie_y)
-        screen.blit(sprite, (x * 48, 48))
-        tile_x += 1
-
-    # draw down
-    for x in range(1, 14):
-        sprite = tileset.draw_image(2, 10)
-        screen.blit(sprite, (x * 48, 444))
-
-    # draw side
-    # sprite = tileset.draw_image(3, 10)
-    # for y in range(2, 10):
-    #     screen.blit(sprite, (48, y * 48))
-    #     screen.blit(pygame.transform.flip(sprite, True, False), (624, y * 48))
-
-    # draw vertex
-    sprite = tileset.draw_image(2, 10)
-    screen.blit(sprite, (0, 48))
-    screen.blit(sprite, (672, 48))
-    screen.blit(sprite, (0, 444))
-    screen.blit(sprite, (672, 444))
+def draw_level(tileset = Tileset.Tileset, level = int):
+    if level == 1:
+        sprite = tileset.draw_ground(12, 0)
+        screen.blit(sprite, (0, 400))
+        sprite = tileset.draw_ground(12, 1)
+        screen.blit(sprite, (0, 432))
+        sprite = tileset.draw_ground(12, 2)
+        screen.blit(sprite, (0, 464))
+        sprite = tileset.draw_ground(12, 2)
+        screen.blit(sprite, (0, 496))
+        sprite = tileset.draw_ground(12, 2)
+        screen.blit(sprite, (0, 528))
 
 def draw_enemy_health(enemy):
     enemy_max_health = enemy.max_health
@@ -153,7 +121,7 @@ def main():
             obj.update()
 
         # set screen white for update display
-        background = pygame.image.load("../sprites/map/background.png")
+        background = pygame.image.load("../sprites/Castle/background.png")
         screen.blit(background, (0, 0))
 
         for event in pygame.event.get():
@@ -182,7 +150,7 @@ def main():
             draw(obj)
         for health in healths:
             draw(health)
-        draw_level(tileset)
+        draw_level(tileset, 1)
         if player.is_player_death:
             draw(died)
         for obj in levels[level_index]:

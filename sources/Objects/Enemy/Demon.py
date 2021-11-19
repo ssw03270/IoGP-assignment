@@ -11,6 +11,7 @@ class Demon(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
+        self.max_health = 10
         self.health = 10
 
         # flower enemy image
