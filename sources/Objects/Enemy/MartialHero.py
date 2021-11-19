@@ -59,7 +59,7 @@ class MartialHero(Object.Object):
         self.attack_delay = 0
         self.attack_max_delay = 2000
         self.is_attack_able = True
-        self.damage = 2
+        self.damage = 0
 
         # flower enemy hit
         self.hit_delay = 0

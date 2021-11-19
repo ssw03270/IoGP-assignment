@@ -21,6 +21,8 @@ class Player(Object.Object):
         self.spr_attack = pygame.image.load("../sprites/HeroKnight/Attack.png").convert_alpha()     # 3
         self.spr_hit = pygame.image.load("../sprites/HeroKnight/Hit.png").convert_alpha()           # 4
         self.spr_death = pygame.image.load("../sprites/HeroKnight/Death.png").convert_alpha()       # 5
+        self.spr_jump = pygame.image.load("../sprites/HeroKnight/Jump.png").convert_alpha()         # 6
+        self.spr_fall = pygame.image.load("../sprites/HeroKnight/Fall.png").convert_alpha()         # 7
 
         # player sound
         self.sound_walk = pygame.mixer.Sound("../sounds/player/walk.mp3")
@@ -98,8 +100,6 @@ class Player(Object.Object):
         self.set_sprite()
 
     def update(self):
-        if self.is_invincibility:
-            print(self.is_invincibility)
         # attack delay counting
         self.attack_delay += self.delta_time
         # hit delay counting
@@ -151,6 +151,18 @@ class Player(Object.Object):
         for i in range(0, 9):
             lis.append(self.spr_death.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is jump
+        for i in range(0, 4):
+            lis.append(self.spr_jump.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is fall
+        for i in range(0, 4):
+            lis.append(self.spr_fall.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
 
     def draw_image(self):
         # if player live, playing animation
@@ -160,12 +172,13 @@ class Player(Object.Object):
                 # if player attack
                 if self.state_index == 3:
                     self.state_index = 0
-                    self.is_attack_able = True
                     self.is_move_able = True
                     self.is_attacking = False
                 # if player hit
                 elif self.state_index == 4:
                     self.state_index = 0
+                    self.is_move_able = True
+                elif self.state_index == 0:
                     self.is_move_able = True
                 self.spr_index = 0
             # update sprite
@@ -201,17 +214,27 @@ class Player(Object.Object):
                 self.y = self.jump_start_point + -1 * math.sin(self.jump_point) * self.jump_speed
                 self.jump_point += math.pi / self.delta_time * 2
 
+                if self.jump_point < math.pi / 2:
+                    if not self.state_index == 2 and not self.state_index == 3 and not self.state_index == 4:
+                        self.state_index = 6
+                else:
+                    if not self.state_index == 2 and not self.state_index == 3 and not self.state_index == 4:
+                        self.state_index = 7
+
             if self.jump_point > math.pi:
                 self.is_jump_able = True
                 self.jump_point = 0
                 self.y = self.jump_start_point
+                if self.state_index == 6 or self.state_index == 7:
+                    self.state_index = 0
 
             # player move
             keys = pygame.key.get_pressed()
 
             # if player move
             if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able and not self.is_invincibility_able:
-                self.state_index = 1
+                if not self.state_index == 6 and not self.state_index == 7:
+                    self.state_index = 1
 
                 # play foot step sound
                 if not self.is_move_sound_play:
@@ -248,9 +271,10 @@ class Player(Object.Object):
     def attack(self):
         # if player doesn't death
         if not self.is_player_death:
-            # check combo
+
             if self.attack_delay >= self.attack_max_delay:
                 self.attack_delay = 0
+                self.is_attack_able = True
 
             # player attack
             if self.is_attack_able:
@@ -296,7 +320,8 @@ class Player(Object.Object):
                 self.is_invincibility = True
                 self.is_invincibility_able = True
                 self.dash_range = 0
-                self.state_index = 2
+                if not self.state_index == 3:
+                    self.state_index = 2
 
             # invincibility time
             if self.is_invincibility_able:
