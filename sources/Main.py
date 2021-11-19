@@ -6,7 +6,7 @@ import pygame, sys
 import time
 from sources.Objects import Object, Player
 from sources.Objects.UI import UiDied, UiHealth
-from sources.Objects.Enemy import FlowerEnemy, Skeleton, Goblin, Demon
+from sources.Objects.Enemy import FlowerEnemy, Skeleton, Goblin, Demon, MartialHero
 from sources import Tileset
 
 clock = pygame.time.Clock()
@@ -95,7 +95,8 @@ def main():
     died = UiDied.UiDied(360, 270, player)
 
     # level
-    levels = [[Demon.Demon(800, 300, player)],
+    levels = [[MartialHero.MartialHero(800, 400, player)],
+              [Demon.Demon(800, 300, player)],
               [FlowerEnemy.FlowerEnemy(500, 400, player)],
               [Goblin.Goblin(-100, 400, player)],
               [Skeleton.Skeleton(800, 400, player)],
