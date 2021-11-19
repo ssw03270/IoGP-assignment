@@ -45,16 +45,30 @@ def draw(object = Object.Object):
 
 def draw_level(tileset = Tileset.Tileset, level = int):
     if level == 1:
-        sprite = tileset.draw_ground(12, 0)
-        screen.blit(sprite, (0, 400))
-        sprite = tileset.draw_ground(12, 1)
-        screen.blit(sprite, (0, 432))
-        sprite = tileset.draw_ground(12, 2)
-        screen.blit(sprite, (0, 464))
-        sprite = tileset.draw_ground(12, 2)
-        screen.blit(sprite, (0, 496))
-        sprite = tileset.draw_ground(12, 2)
-        screen.blit(sprite, (0, 528))
+        for i in range(0, 18, 6):
+            draw_sprite(tileset.draw_wall(20, 1, 27, 6), tileset, 496, i * tileset.real_size)
+
+        draw_sprite(tileset.draw_ground(12, 0, 15, 2), tileset, 0, 400)
+        draw_sprite(tileset.draw_ground(12, 2, 15, 2), tileset, 0, 400 + tileset.real_size * 3)
+        draw_sprite(tileset.draw_ground(12, 2, 15, 2), tileset, 0, 400 + tileset.real_size * 4)
+
+        draw_sprite(tileset.draw_ground(12, 0, 15, 2), tileset, 16 * tileset.real_size, 400)
+        draw_sprite(tileset.draw_ground(12, 2, 15, 2), tileset, 16 * tileset.real_size, 400 + tileset.real_size * 3)
+        draw_sprite(tileset.draw_ground(12, 2, 15, 2), tileset, 16 * tileset.real_size, 400 + tileset.real_size * 4)
+
+        draw_sprite(tileset.draw_ground(12, 0, 15, 2), tileset, 20 * tileset.real_size, 400)
+        draw_sprite(tileset.draw_ground(12, 2, 15, 2), tileset, 20 * tileset.real_size, 400 + tileset.real_size * 3)
+        draw_sprite(tileset.draw_ground(12, 2, 15, 2), tileset, 20 * tileset.real_size, 400 + tileset.real_size * 4)
+
+        for i in range(4, 16, 6):
+            draw_sprite(tileset.draw_wood_env(4, 12, 9, 13), tileset, i * tileset.real_size, 400)
+
+        draw_sprite(tileset.draw_env_object(17, 0, 19, 3), tileset, 544, 300)
+
+def draw_sprite(sprite, tileset, start_x, start_y):
+    for x in range(len(sprite)):
+        for y in range(len(sprite[x])):
+            screen.blit(sprite[x][y], (start_x + x * tileset.real_size, start_y + y * tileset.real_size))
 
 def draw_enemy_health(enemy):
     enemy_max_health = enemy.max_health
@@ -65,7 +79,7 @@ def draw_enemy_health(enemy):
 
 def main():
     # object
-    player = Player.Player(300, 418)
+    player = Player.Player(300, 415)
     healths = [UiHealth.UiHealth(66, 116, player, 1), UiHealth.UiHealth(106, 116, player, 2),
                UiHealth.UiHealth(146, 116, player, 3), UiHealth.UiHealth(186, 116, player, 4),
                UiHealth.UiHealth(226, 116, player, 5)]
@@ -73,10 +87,6 @@ def main():
 
     # level
     levels = [[MartialHero.MartialHero(800, 400, player)],
-              [Demon.Demon(800, 300, player)],
-              [FlowerEnemy.FlowerEnemy(500, 400, player)],
-              [Goblin.Goblin(-100, 400, player)],
-              [Skeleton.Skeleton(800, 400, player)],
               []]
 
     level_index = 0
@@ -145,12 +155,12 @@ def main():
                     level_index = 0
 
         # draw object
+        draw_level(tileset, 1)
         draw(player)
         for obj in levels[level_index]:
             draw(obj)
         for health in healths:
             draw(health)
-        draw_level(tileset, 1)
         if player.is_player_death:
             draw(died)
         for obj in levels[level_index]:
