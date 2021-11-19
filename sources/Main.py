@@ -97,7 +97,7 @@ def draw_enemy_health(enemy):
 
 def main():
     # object
-    player = Player.Player(300, 400)
+    player = Player.Player(300, 418)
     healths = [UiHealth.UiHealth(66, 116, player, 1), UiHealth.UiHealth(106, 116, player, 2),
                UiHealth.UiHealth(146, 116, player, 3), UiHealth.UiHealth(186, 116, player, 4),
                UiHealth.UiHealth(226, 116, player, 5)]

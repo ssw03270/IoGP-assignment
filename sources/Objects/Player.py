@@ -296,6 +296,7 @@ class Player(Object.Object):
                 self.is_invincibility = True
                 self.is_invincibility_able = True
                 self.dash_range = 0
+                self.state_index = 2
 
             # invincibility time
             if self.is_invincibility_able:
@@ -309,6 +310,9 @@ class Player(Object.Object):
                 if self.dash_range > self.dash_max_range:
                     self.is_invincibility_able = False
                     self.is_invincibility = False
+
+                    if self.state_index == 2:
+                        self.state_index = 0
 
     def jump(self):
         if not self.is_player_death:
