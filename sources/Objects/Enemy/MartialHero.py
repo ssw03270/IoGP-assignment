@@ -11,7 +11,8 @@ class MartialHero(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
-        self.health = 3
+        self.max_health = 10
+        self.health = 10
 
         # flower enemy image
         self.spr_idle = pygame.image.load("../sprites/MartialHero/Idle.png").convert_alpha()        # 0
@@ -46,9 +47,17 @@ class MartialHero(Object.Object):
         self.move_delay = 0
         self.move_max_delay = 1000
 
+        # dash
+        self.dash_point = 15
+        self.dash_range = 0
+        self.dash_max_range = 150
+        self.dash_delay = 0
+        self.dash_max_delay = 10000
+        self.is_dash_able = True
+
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 2500
+        self.attack_max_delay = 2000
         self.is_attack_able = True
         self.damage = 2
 
@@ -83,10 +92,13 @@ class MartialHero(Object.Object):
             self.attack_delay += self.delta_time
         if not self.is_move_able:
             self.move_delay += self.delta_time
+        if not self.is_dash_able:
+            self.dash_delay += self.delta_time
         # if flower enemy doesn't death
         if not self.is_enemy_die:
             self.detected_player()
             self.move()
+            self.dash()
 
     def set_sprite(self):
         lis = []
@@ -252,3 +264,29 @@ class MartialHero(Object.Object):
             # set sprite idle
             if self.state_index == 1:
                 self.state_index = 0
+
+    def dash(self):
+        if not self.is_enemy_die:
+            # check dash able
+            if self.dash_delay >= self.dash_max_delay:
+                self.dash_delay = 0
+                self.is_dash_able = True
+
+            # if dash
+            if self.is_dash_able:
+                self.is_dash_able = False
+                self.is_invincibility_able = True
+                self.dash_range = 0
+                self.dash_max_range = math.fabs(self.player.x - self.x)
+
+            # invincibility time
+            if self.is_invincibility_able:
+                if not self.direction:
+                    self.x += self.dash_point
+                else:
+                    self.x -= self.dash_point
+                self.dash_range += self.dash_point
+
+                # if dash range is over than max range
+                if self.dash_range > self.dash_max_range:
+                    self.is_invincibility_able = False

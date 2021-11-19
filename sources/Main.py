@@ -1,11 +1,13 @@
 """
 메인 코드
+왕의 점심은 얼마나 맛있을지 궁금했던 기사는
+성으로 찾아가 그의 점심을 먹어보기로 결심했다
 """
 
 import pygame, sys
 import time
 from sources.Objects import Object, Player
-from sources.Objects.UI import UiDied, UiHealth
+from sources.Objects.UI import UiDied, UiHealth, UiEnemyHealth
 from sources.Objects.Enemy import FlowerEnemy, Skeleton, Goblin, Demon, MartialHero
 from sources import Tileset
 
@@ -85,6 +87,13 @@ def draw_level(tileset = Tileset.Tileset):
     screen.blit(sprite, (672, 48))
     screen.blit(sprite, (0, 444))
     screen.blit(sprite, (672, 444))
+
+def draw_enemy_health(enemy):
+    enemy_max_health = enemy.max_health
+    enemy_health = enemy.health
+    pygame.draw.rect(screen, gray, [150, 500, 420, 20])
+    pygame.draw.rect(screen, red, [150, 500, 420 * (enemy_health / enemy_max_health), 20])
+
 
 def main():
     # object
@@ -176,6 +185,8 @@ def main():
         draw_level(tileset)
         if player.is_player_death:
             draw(died)
+        for obj in levels[level_index]:
+            draw_enemy_health(obj)
 
         pygame.display.update()
 
