@@ -21,7 +21,7 @@ black = (0,  0,  0)
 white = (255, 255, 255)
 blue = (0, 0, 255)
 green = (0, 255, 0)
-red = (255, 0, 0)
+red = (200, 0, 0)
 gray = (59, 59, 59)
 
 # pygame display
@@ -73,8 +73,19 @@ def draw_sprite(sprite, tileset, start_x, start_y):
 def draw_enemy_health(enemy):
     enemy_max_health = enemy.max_health
     enemy_health = enemy.health
-    pygame.draw.rect(screen, gray, [150, 500, 420, 20])
-    pygame.draw.rect(screen, red, [150, 500, 420 * (enemy_health / enemy_max_health), 20])
+
+    font1 = pygame.font.SysFont(None, 30)
+    img1 = font1.render(enemy.name, True, white)
+    screen.blit(img1, (50, 50))
+
+    pygame.draw.rect(screen, black, [148, 48, 423, 24])
+    pygame.draw.rect(screen, black, [146, 50, 428, 20])
+
+    pygame.draw.rect(screen, gray, [145, 51, 426, 18])
+
+    pygame.draw.rect(screen, red, [150, 50, 420 * (enemy_health / enemy_max_health), 20])
+    pygame.draw.rect(screen, red, [148, 52, 420 * (enemy_health / enemy_max_health) + 4, 16])
+
 
 
 def main():

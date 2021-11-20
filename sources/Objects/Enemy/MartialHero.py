@@ -13,6 +13,7 @@ class MartialHero(Object.Object):
         self.direction = False
         self.max_health = 10
         self.health = 10
+        self.name = "Martial Hero"
 
         # flower enemy image
         self.spr_idle = pygame.image.load("../sprites/MartialHero/Idle.png").convert_alpha()        # 0
