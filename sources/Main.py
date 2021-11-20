@@ -74,9 +74,12 @@ def draw_enemy_health(enemy):
     enemy_max_health = enemy.max_health
     enemy_health = enemy.health
 
-    font1 = pygame.font.SysFont(None, 30)
-    img1 = font1.render(enemy.name, True, white)
-    screen.blit(img1, (50, 50))
+    font = pygame.font.SysFont(None, 30)
+    title = font.render(enemy.name, True, white)
+    title_rect = title.get_rect()
+    title_rect.centerx = 360
+    title_rect.y = 25
+    screen.blit(title, title_rect)
 
     pygame.draw.rect(screen, black, [148, 48, 423, 24])
     pygame.draw.rect(screen, black, [146, 50, 428, 20])
