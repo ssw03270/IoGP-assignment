@@ -50,10 +50,10 @@ class Player(Object.Object):
         self.is_move_able = True
 
         # player attack
-        self.attack_range = 130
+        self.attack_range = 100
         self.attack_combo = 0
         self.attack_delay = 0
-        self.attack_max_delay = 1000
+        self.attack_max_delay = 1500
         self.is_attack_able = True
         self.is_attacking = False
 

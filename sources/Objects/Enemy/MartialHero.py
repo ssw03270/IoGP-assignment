@@ -1,6 +1,7 @@
 import pygame
 import math, random
 from sources.Objects import Object, Player
+from sources.Objects.Ability import Star
 
 class MartialHero(Object.Object):
     def __init__(self, x, y, player = Player.Player):
@@ -14,14 +15,16 @@ class MartialHero(Object.Object):
         self.max_health = 10
         self.health = 10
         self.name = "Martial Hero"
+        self.ability = []
 
         # flower enemy image
         self.spr_idle = pygame.image.load("../sprites/MartialHero/Idle.png").convert_alpha()        # 0
         self.spr_walk = pygame.image.load("../sprites/MartialHero/Run.png").convert_alpha()         # 1
         self.spr_attack1 = pygame.image.load("../sprites/MartialHero/Attack1.png").convert_alpha()  # 2
         self.spr_attack2 = pygame.image.load("../sprites/MartialHero/Attack2.png").convert_alpha()  # 3
-        self.spr_death = pygame.image.load("../sprites/MartialHero/Death.png").convert_alpha()      # 4
-        self.spr_hit = pygame.image.load("../sprites/MartialHero/Hit.png").convert_alpha()          # 5
+        self.spr_attack3 = pygame.image.load("../sprites/MartialHero/Attack3.png").convert_alpha()  # 4
+        self.spr_death = pygame.image.load("../sprites/MartialHero/Death.png").convert_alpha()      # 5
+        self.spr_hit = pygame.image.load("../sprites/MartialHero/Hit.png").convert_alpha()          # 6
 
         # flower enemy sound
         self.sound_attack = pygame.mixer.Sound("../sounds/Skeleton/Attack.mp3")
@@ -37,8 +40,11 @@ class MartialHero(Object.Object):
 
         # check player detect
         self.player = player
-        self.is_detected_player = False
-        self.max_distance = 60
+        self.is_detected_near_player = False
+        self.is_detected_far_player = False
+        self.max_near_distance = 100
+        self.min_far_distance = 200
+        self.max_far_distance = 400
 
         # about move
         self.is_move_sound_play = False
@@ -58,7 +64,7 @@ class MartialHero(Object.Object):
 
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 2000
+        self.attack_max_delay = 1000
         self.is_attack_able = True
         self.damage = 0
 
@@ -100,6 +106,8 @@ class MartialHero(Object.Object):
             self.detected_player()
             self.move()
             self.dash()
+        for star in self.ability:
+            star.update()
 
     def set_sprite(self):
         lis = []
@@ -127,6 +135,12 @@ class MartialHero(Object.Object):
         self.spr_list.append(lis[:])
         lis.clear()
 
+        # state is attack3
+        for i in range(0, 6):
+            lis.append(self.spr_attack3.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
         # state is death
         for i in range(0, 6):
             lis.append(self.spr_death.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
@@ -145,10 +159,10 @@ class MartialHero(Object.Object):
             # if current index over than max index
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 # if flower enemy attack
-                if self.state_index == 2 or self.state_index == 3:
+                if self.state_index >= 2 or self.state_index <= 4:
                     self.state_index = 0
                 # if flower enemy hit
-                elif self.state_index == 5:
+                elif self.state_index == 6:
                     self.state_index = 0
                 self.spr_index = 0
             sprite = pygame.transform.scale(
@@ -172,7 +186,7 @@ class MartialHero(Object.Object):
                 (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             return sprite
 
-    def attack(self):
+    def attack(self, is_far, is_near):
         # if enemy flower doesn't death
         if not self.is_enemy_die:
             # check attack able
@@ -183,12 +197,18 @@ class MartialHero(Object.Object):
 
             # player attack
             if self.is_attack_able:
-                self.state_index = random.randrange(2, 4)
+                if is_near:
+                    self.state_index = random.randrange(2, 4)
+                elif is_far:
+                    self.state_index = 4
                 self.spr_index = 0
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
                 self.is_move_able = False
-                self.player.hit(self.damage)
+                if self.state_index <= 3:
+                    self.player.hit(self.damage)
+                else:
+                    self.ability.append(Star.Star(self.x, self.y, self.direction, self.player, self))
 
     def hit(self, damage):
         if not self.is_enemy_die:
@@ -199,7 +219,7 @@ class MartialHero(Object.Object):
                 self.is_move_able = True
 
             if self.is_hit_able:
-                self.state_index = 5
+                self.state_index = 6
                 self.spr_index = 0
                 self.health -= damage
                 self.is_hit_able = False
@@ -210,27 +230,28 @@ class MartialHero(Object.Object):
                 self.is_attack_able = False
 
             if self.health <= 0:
-                self.state_index = 4
+                self.state_index = 5
                 self.spr_index = 0
                 self.is_enemy_die = True
                 self.sound_death.play()
 
     def detected_player(self):
         if self.is_move_able:
-            self.direction = self.player.spr_x < self.spr_x
+            self.direction = self.player.x < self.x
 
-        distance = math.fabs(self.player.spr_x - self.spr_x)
-        self.is_detected_player = distance < self.max_distance
+        distance = math.fabs(self.player.x - self.x)
+        self.is_detected_far_player = distance < self.max_far_distance and self.min_far_distance < distance
+        self.is_detected_near_player = distance < self.max_near_distance
 
-        if self.is_detected_player:
+        if self.is_detected_far_player or self.is_detected_near_player:
             self.is_move = False
-            self.attack()
+            self.attack(self.is_detected_far_player, self.is_detected_near_player)
         else:
             self.is_move = True
 
         if self.player.is_attacking:
-            if min(self.player.spr_x, self.player.spr_x + self.player.attack_range) < self.spr_x and self.spr_x < max(
-                    self.player.spr_x, self.player.spr_x + self.player.attack_range):
+            if min(self.player.x, self.player.x + self.player.attack_range) < self.x and self.x < max(
+                    self.player.x, self.player.x + self.player.attack_range):
                 self.hit(self.player.attack_damage)
 
     def move(self):

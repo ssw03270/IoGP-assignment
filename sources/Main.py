@@ -136,6 +136,8 @@ def main():
         player.delta_time = delta_time
         for obj in levels[level_index]:
             obj.delta_time = delta_time
+            for ability in obj.ability:
+                ability.delta_time = delta_time
         for health in healths:
             health.delta_time = delta_time
 
@@ -173,6 +175,8 @@ def main():
         draw(player)
         for obj in levels[level_index]:
             draw(obj)
+            for ability in obj.ability:
+                draw(ability)
         for health in healths:
             draw(health)
         if player.is_player_death:
