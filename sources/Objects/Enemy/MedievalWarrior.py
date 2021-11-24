@@ -1,9 +1,8 @@
 import pygame
 import math, random
 from sources.Objects import Object, Player
-from sources.Objects.Ability import Star
 
-class MartialHero(Object.Object):
+class MedievalWarrior(Object.Object):
     def __init__(self, x, y, player = Player.Player):
         self.x = x
         self.y = y
@@ -14,17 +13,17 @@ class MartialHero(Object.Object):
         self.direction = False
         self.max_health = 10
         self.health = self.max_health
-        self.name = "Martial Hero"
+        self.name = "Medieval Warrior"
         self.ability = []
 
         # flower enemy image
-        self.spr_idle = pygame.image.load("../sprites/MartialHero/Idle.png").convert_alpha()        # 0
-        self.spr_walk = pygame.image.load("../sprites/MartialHero/Run.png").convert_alpha()         # 1
-        self.spr_attack1 = pygame.image.load("../sprites/MartialHero/Attack1.png").convert_alpha()  # 2
-        self.spr_attack2 = pygame.image.load("../sprites/MartialHero/Attack2.png").convert_alpha()  # 3
-        self.spr_attack3 = pygame.image.load("../sprites/MartialHero/Attack3.png").convert_alpha()  # 4
-        self.spr_death = pygame.image.load("../sprites/MartialHero/Death.png").convert_alpha()      # 5
-        self.spr_hit = pygame.image.load("../sprites/MartialHero/Hit.png").convert_alpha()          # 6
+        self.spr_idle = pygame.image.load("../sprites/MedievalWarrior/Idle.png").convert_alpha()        # 0
+        self.spr_walk = pygame.image.load("../sprites/MedievalWarrior/Run.png").convert_alpha()         # 1
+        self.spr_attack1 = pygame.image.load("../sprites/MedievalWarrior/Attack1.png").convert_alpha()  # 2
+        self.spr_attack2 = pygame.image.load("../sprites/MedievalWarrior/Attack2.png").convert_alpha()  # 3
+        self.spr_attack3 = pygame.image.load("../sprites/MedievalWarrior/Attack3.png").convert_alpha()  # 4
+        self.spr_death = pygame.image.load("../sprites/MedievalWarrior/Death.png").convert_alpha()      # 5
+        self.spr_hit = pygame.image.load("../sprites/MedievalWarrior/Hit.png").convert_alpha()          # 6
 
         # flower enemy sound
         self.sound_attack = pygame.mixer.Sound("../sounds/Skeleton/Attack.mp3")
@@ -41,31 +40,20 @@ class MartialHero(Object.Object):
         # check player detect
         self.player = player
         self.is_detected_near_player = False
-        self.is_detected_far_player = False
         self.max_near_distance = 100
-        self.min_far_distance = 200
-        self.max_far_distance = 400
 
         # about move
         self.is_move_sound_play = False
         self.is_move = False
         self.is_move_able = True
-        self.move_speed = 0.1
+        self.move_speed = 0.2
         self.move_delay = 0
         self.move_max_delay = 1000
-
-        # dash
-        self.dash_point = 15
-        self.dash_range = 0
-        self.dash_max_range = 150
-        self.dash_delay = 0
-        self.dash_max_delay = 10000
-        self.is_dash_able = True
 
         # flower enemy attack
         self.attack_delay = 0
         self.attack_max_delay = 2000
-        self.is_attack_able = False
+        self.is_attack_able = True
         self.damage = 1
 
         # flower enemy hit
@@ -80,8 +68,8 @@ class MartialHero(Object.Object):
         self.state_index = 0
 
         # sprite information
-        self.spr_width = 200
-        self.spr_height = 200
+        self.spr_width = 135
+        self.spr_height = 135
         self.spr_speed = 100
         self.spr_index = 0
         self.spr_size = 2
@@ -99,56 +87,51 @@ class MartialHero(Object.Object):
             self.attack_delay += self.delta_time
         if not self.is_move_able:
             self.move_delay += self.delta_time
-        if not self.is_dash_able:
-            self.dash_delay += self.delta_time
         # if flower enemy doesn't death
         if not self.is_enemy_die:
             self.detected_player()
             self.move()
-            self.dash()
-        for star in self.ability:
-            star.update()
 
     def set_sprite(self):
         lis = []
         # state is idle
-        for i in range(0, 8):
+        for i in range(0, 10):
             lis.append(self.spr_idle.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
         # state is walk
-        for i in range(0, 8):
+        for i in range(0, 6):
             lis.append(self.spr_walk.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
         # state is attack1
-        for i in range(0, 6):
+        for i in range(0, 4):
             lis.append(self.spr_attack1.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
         # state is attack2
-        for i in range(0, 6):
+        for i in range(0, 4):
             lis.append(self.spr_attack2.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
         # state is attack3
-        for i in range(0, 6):
+        for i in range(0, 5):
             lis.append(self.spr_attack3.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
         # state is death
-        for i in range(0, 6):
+        for i in range(0, 9):
             lis.append(self.spr_death.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
         # state is hit
-        for i in range(0, 4):
+        for i in range(0, 3):
             lis.append(self.spr_hit.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
@@ -186,7 +169,7 @@ class MartialHero(Object.Object):
                 (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             return sprite
 
-    def attack(self, is_far, is_near):
+    def attack(self, is_near):
         # if enemy flower doesn't death
         if not self.is_enemy_die:
             # check attack able
@@ -197,18 +180,12 @@ class MartialHero(Object.Object):
 
             # player attack
             if self.is_attack_able:
-                if is_near:
-                    self.state_index = random.randrange(2, 4)
-                elif is_far:
-                    self.state_index = 4
+                self.state_index = random.randrange(2, 5)
                 self.spr_index = 0
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
                 self.is_move_able = False
-                if self.state_index <= 3:
-                    self.player.hit(self.damage)
-                else:
-                    self.ability.append(Star.Star(self.x, self.y, self.direction, self.player, self))
+                self.player.hit(self.damage)
 
     def hit(self, damage):
         if not self.is_enemy_die:
@@ -239,12 +216,11 @@ class MartialHero(Object.Object):
             self.direction = self.player.x < self.x
 
         distance = math.fabs(self.player.x - self.x)
-        self.is_detected_far_player = distance < self.max_far_distance and self.min_far_distance < distance
         self.is_detected_near_player = distance < self.max_near_distance
 
-        if self.is_detected_far_player or self.is_detected_near_player:
+        if self.is_detected_near_player:
             self.is_move = False
-            self.attack(self.is_detected_far_player, self.is_detected_near_player)
+            self.attack(self.is_detected_near_player)
         else:
             self.is_move = True
 
@@ -286,29 +262,3 @@ class MartialHero(Object.Object):
             # set sprite idle
             if self.state_index == 1:
                 self.state_index = 0
-
-    def dash(self):
-        if not self.is_enemy_die:
-            # check dash able
-            if self.dash_delay >= self.dash_max_delay:
-                self.dash_delay = 0
-                self.is_dash_able = True
-
-            # if dash
-            if self.is_dash_able:
-                self.is_dash_able = False
-                self.is_invincibility_able = True
-                self.dash_range = 0
-                self.dash_max_range = math.fabs(self.player.x - self.x)
-
-            # invincibility time
-            if self.is_invincibility_able:
-                if not self.direction:
-                    self.x += self.dash_point
-                else:
-                    self.x -= self.dash_point
-                self.dash_range += self.dash_point
-
-                # if dash range is over than max range
-                if self.dash_range > self.dash_max_range:
-                    self.is_invincibility_able = False
