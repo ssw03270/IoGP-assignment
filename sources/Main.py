@@ -31,6 +31,10 @@ game_title = 'Last Boss'
 pygame.display.set_caption(game_title)
 screen.fill(white)
 
+
+anim_light_level_2_index = 0
+anim_light_level_2_max_index = 3
+
 # level design
 
 
@@ -43,8 +47,8 @@ def draw(object = Object.Object):
     sprite = object.draw_image()
     screen.blit(sprite, (x - object.spr_width / 2 * object.spr_size, y - object.spr_height / 2 * object.spr_size))
 
-def draw_level(tileset = Tileset.Tileset, level = int):
-    if level == 1:
+def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
+    if level == 0:
         for i in range(0, 18, 6):
             draw_sprite(tileset.draw_wall(20, 1, 27, 6), tileset, 496, i * tileset.real_size)
 
@@ -64,6 +68,43 @@ def draw_level(tileset = Tileset.Tileset, level = int):
             draw_sprite(tileset.draw_wood_env(4, 12, 9, 13), tileset, i * tileset.real_size, 400)
 
         draw_sprite(tileset.draw_env_object(17, 0, 19, 3), tileset, 544, 300)
+
+    elif level == 1:
+        for i in range(0, 18, 4):
+            draw_sprite(tileset.draw_wall(20, 11, 25, 15), tileset, 0, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(20, 11, 25, 15), tileset, 6 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(20, 11, 25, 15), tileset, 12 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(20, 11, 25, 15), tileset, 18 * tileset.real_size, i * tileset.real_size)
+
+        for i in range(0, 24, 3):
+            draw_sprite(tileset.draw_ground(1, 0, 3, 2), tileset, i * tileset.real_size, 400)
+        for i in range(0, 24):
+            draw_sprite(tileset.draw_ground(0, 4, 0, 4), tileset, i * tileset.real_size, 400 + tileset.real_size * 2)
+            draw_sprite(tileset.draw_ground(0, 4, 0, 4), tileset, i * tileset.real_size, 400 + tileset.real_size * 3)
+            draw_sprite(tileset.draw_ground(0, 4, 0, 4), tileset, i * tileset.real_size, 400 + tileset.real_size * 4)
+
+        for i in range(0, 4):
+            draw_sprite(tileset.draw_env_object(10, 0, 12, 1), tileset, i * 224 - 50, 96)
+            draw_sprite(tileset.draw_env_object(11, 2, 12, 5), tileset, i * 224 - 18, 136)
+            draw_sprite(tileset.draw_env_object(11, 2, 12, 5), tileset, i * 224 - 18, 136 + 32 * 3)
+            draw_sprite(tileset.draw_env_object(10, 6, 12, 7), tileset, i * 224 - 50, 136 + 32 * 7)
+
+        for i in range(0, 24, 7):
+            draw_sprite(tileset.draw_env_object(7, 9, 11, 11), tileset, 32 + i * tileset.real_size, 0)
+            draw_sprite(tileset.draw_env_object(7, 12, 9, 14), tileset, 0 + i * tileset.real_size, 0)
+            draw_sprite(tileset.draw_env_object(10, 12, 12, 14), tileset, 128 + i * tileset.real_size, 0)
+
+        global anim_light_level_2_index
+
+        for i in range(0, 3):
+            draw_sprite(tileset.draw_environment(13, 12, 13, 15), tileset, i * 224 + 96, 300)
+            draw_sprite(tileset.draw_anim_light(int(anim_light_level_2_index), 5, int(anim_light_level_2_index), 5), tileset, i * 224 + 96, 300)
+
+        # level anim update
+        anim_light_level_2_index += delta_time / 1000 * 10
+        print(anim_light_level_2_index)
+        if anim_light_level_2_index > anim_light_level_2_max_index:
+            anim_light_level_2_index = 0
 
 def draw_sprite(sprite, tileset, start_x, start_y):
     for x in range(len(sprite)):
@@ -100,7 +141,7 @@ def main():
     died = UiDied.UiDied(360, 270, player)
 
     # level
-    levels = [[MedievalWarrior.MedievalWarrior(800, 400, player)],
+    levels = [[],
               [MartialHero.MartialHero(800, 400, player)],
               []]
 
@@ -116,13 +157,12 @@ def main():
     while True:
         # set fps
         delta_time = clock.tick(30)
-
         # check level
         is_all_enemy_die = True
         for obj in levels[level_index]:
             if not obj.is_enemy_die:
                 is_all_enemy_die = False
-        if is_all_enemy_die and level_index + 1 < max_level_index:
+        if (is_all_enemy_die or len(levels[level_index]) == 0) and level_index + 1 < max_level_index:
             is_next_level_able += True
 
         # is time to move next level
@@ -150,6 +190,7 @@ def main():
         # set screen white for update display
         background = pygame.image.load("../sprites/Castle/background.png")
         screen.blit(background, (0, 0))
+        draw_level(tileset, level_index, delta_time)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -172,7 +213,6 @@ def main():
                     level_index = 0
 
         # draw object
-        draw_level(tileset, 1)
         draw(player)
         for obj in levels[level_index]:
             draw(obj)
