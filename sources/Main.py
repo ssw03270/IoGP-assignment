@@ -71,10 +71,10 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
 
     elif level == 1:
         for i in range(0, 18, 4):
-            draw_sprite(tileset.draw_wall(20, 11, 25, 15), tileset, 0, i * tileset.real_size)
-            draw_sprite(tileset.draw_wall(20, 11, 25, 15), tileset, 6 * tileset.real_size, i * tileset.real_size)
-            draw_sprite(tileset.draw_wall(20, 11, 25, 15), tileset, 12 * tileset.real_size, i * tileset.real_size)
-            draw_sprite(tileset.draw_wall(20, 11, 25, 15), tileset, 18 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(20, 12, 25, 15), tileset, 0, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(20, 12, 25, 15), tileset, 6 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(20, 12, 25, 15), tileset, 12 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(20, 12, 25, 15), tileset, 18 * tileset.real_size, i * tileset.real_size)
 
         for i in range(0, 24, 3):
             draw_sprite(tileset.draw_ground(1, 0, 3, 2), tileset, i * tileset.real_size, 400)
@@ -105,6 +105,30 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
         print(anim_light_level_2_index)
         if anim_light_level_2_index > anim_light_level_2_max_index:
             anim_light_level_2_index = 0
+
+
+    elif level == 2:
+        for i in range(0, 18, 5):
+            draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 0, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 4 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 8 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 12 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 16 * tileset.real_size, i * tileset.real_size)
+            draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 20 * tileset.real_size, i * tileset.real_size)
+        for i in range(0, 24, 5):
+            draw_sprite(tileset.draw_ground(0, 12, 5, 13), tileset, i * tileset.real_size, 400)
+        for i in range(0, 24):
+            draw_sprite(tileset.draw_ground(12, 2, 12, 2), tileset, i * tileset.real_size, 464)
+            draw_sprite(tileset.draw_ground(12, 2, 12, 2), tileset, i * tileset.real_size, 496)
+            draw_sprite(tileset.draw_ground(12, 2, 12, 2), tileset, i * tileset.real_size, 528)
+        for i in range(0, 24, 3):
+            draw_sprite(tileset.draw_env_object(13, 18, 16, 18), tileset, i * tileset.real_size, 0)
+        for i in range(0, 4):
+            draw_sprite(tileset.draw_env_object(22, 25, 24, 25), tileset, i * 224 - 50, 32)
+            draw_sprite(tileset.draw_env_object(23, 26, 23, 30), tileset, i * 224 - 18, 64)
+            draw_sprite(tileset.draw_env_object(23, 27, 23, 30), tileset, i * 224 - 18, 64 + 32 * 3)
+            draw_sprite(tileset.draw_env_object(23, 27, 23, 30), tileset, i * 224 - 18, 64 + 32 * 6)
+            draw_sprite(tileset.draw_env_object(22, 31, 24, 31), tileset, i * 224 - 50, 64 + 32 * 10)
 
 def draw_sprite(sprite, tileset, start_x, start_y):
     for x in range(len(sprite)):
@@ -142,6 +166,7 @@ def main():
 
     # level
     levels = [[],
+              [],
               [MartialHero.MartialHero(800, 400, player)],
               []]
 
