@@ -7,7 +7,7 @@
 import pygame, sys
 import time
 from sources.Objects import Object, Player
-from sources.Objects.UI import UiDied, UiHealth, UiEnemyHealth
+from sources.Objects.UI import UiDied, UiHealth, UiEnemyHealth, Button
 from sources.Objects.Enemy import MedievalWarrior, MartialHero
 from sources import Tileset
 
@@ -33,7 +33,7 @@ screen.fill(white)
 
 
 anim_light_level_2_index = 0
-anim_light_level_2_max_index = 3
+anim_light_level_2_max_index = 4
 
 # level design
 
@@ -49,6 +49,25 @@ def draw(object = Object.Object):
 
 def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
     if level == 0:
+        button1 = Button.Button(360, 240, "Start")
+        draw(button1)
+        font = pygame.font.SysFont(None, 30)
+        title = font.render(button1.title, True, white)
+        title_rect = title.get_rect()
+        title_rect.centerx = button1.x
+        title_rect.y = button1.y - 10
+        screen.blit(title, title_rect)
+
+        button2 = Button.Button(360, 300, "Exit")
+        draw(button2)
+        font = pygame.font.SysFont(None, 30)
+        title = font.render(button2.title, True, white)
+        title_rect = title.get_rect()
+        title_rect.centerx = button2.x
+        title_rect.y = button2.y - 10
+        screen.blit(title, title_rect)
+
+    elif level == 1:
         for i in range(0, 18, 6):
             draw_sprite(tileset.draw_wall(20, 1, 27, 6), tileset, 496, i * tileset.real_size)
 
@@ -69,7 +88,7 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
 
         draw_sprite(tileset.draw_env_object(17, 0, 19, 3), tileset, 544, 300)
 
-    elif level == 1:
+    elif level == 2:
         for i in range(0, 18, 4):
             draw_sprite(tileset.draw_wall(20, 12, 25, 15), tileset, 0, i * tileset.real_size)
             draw_sprite(tileset.draw_wall(20, 12, 25, 15), tileset, 6 * tileset.real_size, i * tileset.real_size)
@@ -107,7 +126,7 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
             anim_light_level_2_index = 0
 
 
-    elif level == 2:
+    elif level == 3:
         for i in range(0, 18, 5):
             draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 0, i * tileset.real_size)
             draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 4 * tileset.real_size, i * tileset.real_size)
@@ -167,6 +186,7 @@ def main():
     # level
     levels = [[],
               [],
+              [],
               [MartialHero.MartialHero(800, 400, player)],
               []]
 
@@ -187,7 +207,7 @@ def main():
         for obj in levels[level_index]:
             if not obj.is_enemy_die:
                 is_all_enemy_die = False
-        if (is_all_enemy_die or len(levels[level_index]) == 0) and level_index + 1 < max_level_index:
+        if is_all_enemy_die and level_index + 1 < max_level_index:
             is_next_level_able += True
 
         # is time to move next level
