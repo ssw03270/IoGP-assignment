@@ -11,7 +11,11 @@ class Player(Object.Object):
         self.height = 20
         self.delta_time = 0
         self.real_x = self.x
-        self.health = 5
+
+        self.health = 10
+        self.max_health = 10
+        self.energy = 10
+        self.max_energy = 10
         self.attack_damage = 1
 
         # player image

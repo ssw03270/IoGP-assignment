@@ -128,8 +128,8 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
 
         # level anim update
         anim_light_level_2_index += delta_time / 1000 * 10
-        print(anim_light_level_2_index)
-        if anim_light_level_2_index > anim_light_level_2_max_index:
+
+        if anim_light_level_2_index >= anim_light_level_2_max_index:
             anim_light_level_2_index = 0
 
 
@@ -180,7 +180,27 @@ def draw_enemy_health(enemy):
     pygame.draw.rect(screen, red, [150, 50, 420 * (enemy_health / enemy_max_health), 20])
     pygame.draw.rect(screen, red, [148, 52, 420 * (enemy_health / enemy_max_health) + 4, 16])
 
+def draw_player_ui(player):
+    player_max_health = player.max_health
+    player_health = player.health
+    player_max_energy = player.max_energy
+    player_energy = player.energy
 
+    pygame.draw.rect(screen, black, [48, 473, 123, 24])
+    pygame.draw.rect(screen, black, [47, 475, 128, 20])
+
+    pygame.draw.rect(screen, gray, [45, 476, 126, 18])
+
+    pygame.draw.rect(screen, red, [50, 475, 120 * (player_health / player_max_health), 20])
+    pygame.draw.rect(screen, red, [46, 477, 120 * (player_health / player_max_health) + 6, 16])
+
+    pygame.draw.rect(screen, black, [48, 498, 123, 24])
+    pygame.draw.rect(screen, black, [47, 500, 128, 20])
+
+    pygame.draw.rect(screen, gray, [45, 501, 126, 18])
+
+    pygame.draw.rect(screen, blue, [50, 500, 120 * (player_energy / player_max_energy), 20])
+    pygame.draw.rect(screen, blue, [46, 502, 120 * (player_energy / player_max_energy) + 6, 16])
 
 def main():
     # object
@@ -188,9 +208,6 @@ def main():
     player_y = 415
     player = Player.Player(player_x, player_y)
 
-    healths = [UiHealth.UiHealth(66, 116, player, 1), UiHealth.UiHealth(106, 116, player, 2),
-               UiHealth.UiHealth(146, 116, player, 3), UiHealth.UiHealth(186, 116, player, 4),
-               UiHealth.UiHealth(226, 116, player, 5)]
     died = UiDied.UiDied(360, 270, player)
 
     # level
@@ -237,8 +254,6 @@ def main():
             obj.delta_time = delta_time
             for ability in obj.ability:
                 ability.delta_time = delta_time
-        for health in healths:
-            health.delta_time = delta_time
 
         # update each object
         if not level_index == 0:
@@ -286,13 +301,11 @@ def main():
         # draw object
         if not level_index == 0:
             draw(player)
+            draw_player_ui(player)
         for obj in levels[level_index]:
             draw(obj)
             for ability in obj.ability:
                 draw(ability)
-        for health in healths:
-            if not level_index == 0:
-                draw(health)
         if player.is_player_death:
             draw(died)
         for obj in levels[level_index]:
