@@ -27,7 +27,7 @@ gray = (59, 59, 59)
 # pygame display
 window_size = [720, 540]
 screen = pygame.display.set_mode(window_size)
-game_title = 'Last Boss'
+game_title = 'King\'s Lunch '
 pygame.display.set_caption(game_title)
 screen.fill(white)
 
@@ -51,7 +51,10 @@ def draw(object = Object.Object):
 
 def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
     if level == 0:
-        button1 = Button.Button(360, 240, "Start")
+        spr_title = pygame.image.load("../sprites/ui/Title.png").convert_alpha()
+        screen.blit(spr_title, (360 - 257, 100))
+
+        button1 = Button.Button(360, 340, "Start")
         draw(button1)
         font = pygame.font.SysFont(None, 30)
         title = font.render(button1.title, True, white)
@@ -61,7 +64,7 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
         screen.blit(title, title_rect)
         button_list.append(button1)
 
-        button2 = Button.Button(360, 300, "Exit")
+        button2 = Button.Button(360, 400, "Exit")
         draw(button2)
         font = pygame.font.SysFont(None, 30)
         title = font.render(button2.title, True, white)
@@ -181,14 +184,17 @@ def draw_enemy_health(enemy):
 
 def main():
     # object
-    player = Player.Player(300, 415)
+    player_x = 100
+    player_y = 415
+    player = Player.Player(player_x, player_y)
+
     healths = [UiHealth.UiHealth(66, 116, player, 1), UiHealth.UiHealth(106, 116, player, 2),
                UiHealth.UiHealth(146, 116, player, 3), UiHealth.UiHealth(186, 116, player, 4),
                UiHealth.UiHealth(226, 116, player, 5)]
     died = UiDied.UiDied(360, 270, player)
 
     # level
-    levels = [[MartialHero.MartialHero(800, 400, player)],
+    levels = [[],
               [],
               [],
               [MartialHero.MartialHero(800, 400, player)],
@@ -211,8 +217,8 @@ def main():
         for obj in levels[level_index]:
             if not obj.is_enemy_die:
                 is_all_enemy_die = False
-        if is_all_enemy_die and level_index + 1 < max_level_index:
-            is_next_level_able += True
+        if is_all_enemy_die and level_index + 1 < max_level_index and not level_index == 0:
+            is_next_level_able = True
 
         # is time to move next level
         if is_next_level_able:
@@ -221,6 +227,9 @@ def main():
                 next_level_delay = 0
                 is_next_level_able = False
                 level_index += 1
+
+                player.x = player_x
+                player.y = player_y
 
         # set delta time of each object
         player.delta_time = delta_time
@@ -232,7 +241,8 @@ def main():
             health.delta_time = delta_time
 
         # update each object
-        player.update()
+        if not level_index == 0:
+            player.update()
         for obj in levels[level_index]:
             obj.update()
 
@@ -249,9 +259,15 @@ def main():
                 column_index = event.pos[0]
                 row_index = event.pos[1]
                 for button in button_list:
-                    button.check_click(column_index, row_index)
+                    value = button.check_click(column_index, row_index)
+                    if value == "Start":
+                        level_index = 1
+                        player.x = player_x
+                        player.y = player_y
+                    elif value == "Exit":
+                        sys.exit()
 
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN and not level_index == 0:
                 if event.key == pygame.K_LCTRL:
                     player.attack()
                 if event.key == pygame.K_SPACE:
@@ -264,17 +280,19 @@ def main():
                     died = UiDied.UiDied(360, 270, player)
 
                     # level
-                    levels = [[FlowerEnemy.FlowerEnemy(500, 400, player), Skeleton.Skeleton(100, 400, player)], []]
+                    levels = levels
                     level_index = 0
 
         # draw object
-        draw(player)
+        if not level_index == 0:
+            draw(player)
         for obj in levels[level_index]:
             draw(obj)
             for ability in obj.ability:
                 draw(ability)
         for health in healths:
-            draw(health)
+            if not level_index == 0:
+                draw(health)
         if player.is_player_death:
             draw(died)
         for obj in levels[level_index]:
