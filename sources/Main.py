@@ -35,6 +35,8 @@ screen.fill(white)
 anim_light_level_2_index = 0
 anim_light_level_2_max_index = 4
 
+button_list = []
+
 # level design
 
 
@@ -57,6 +59,7 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
         title_rect.centerx = button1.x
         title_rect.y = button1.y - 10
         screen.blit(title, title_rect)
+        button_list.append(button1)
 
         button2 = Button.Button(360, 300, "Exit")
         draw(button2)
@@ -66,6 +69,7 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
         title_rect.centerx = button2.x
         title_rect.y = button2.y - 10
         screen.blit(title, title_rect)
+        button_list.append(button2)
 
     elif level == 1:
         for i in range(0, 18, 6):
@@ -184,7 +188,7 @@ def main():
     died = UiDied.UiDied(360, 270, player)
 
     # level
-    levels = [[],
+    levels = [[MartialHero.MartialHero(800, 400, player)],
               [],
               [],
               [MartialHero.MartialHero(800, 400, player)],
@@ -240,6 +244,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                column_index = event.pos[0]
+                row_index = event.pos[1]
+                for button in button_list:
+                    button.check_click(column_index, row_index)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LCTRL:

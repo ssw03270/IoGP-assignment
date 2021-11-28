@@ -22,3 +22,11 @@ class Button(Object.Object):
             pygame.transform.flip(sprite, False, False),
             (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
         return sprite
+
+    def check_click(self, x, y):
+        click_x = x
+        click_y = y
+
+        if self.x - self.spr_width / 2 * self.spr_size < click_x and click_x < self.x + self.spr_width / 2 * self.spr_size:
+            if self.y - self.spr_height / 2 * self.spr_size < click_y and click_y < self.y + self.spr_height / 2 * self.spr_size:
+                print(self.title)
