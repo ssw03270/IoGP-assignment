@@ -53,6 +53,8 @@ class MedievalWarrior(Object.Object):
         # flower enemy attack
         self.attack_delay = 0
         self.attack_max_delay = 2000
+        self.attack_combo = 0
+        self.attack_max_combo = 2
         self.is_attack_able = True
         self.damage = 1
 
@@ -180,7 +182,16 @@ class MedievalWarrior(Object.Object):
 
             # player attack
             if self.is_attack_able:
-                self.state_index = random.randrange(2, 5)
+                if self.attack_combo < self.attack_max_combo:
+                    self.attack_max_delay = 500
+                elif self.attack_combo == self.attack_max_combo:
+                    self.attack_max_delay = 2000
+
+                self.state_index = self.attack_combo + 2
+                self.attack_combo += 1
+                if self.attack_combo > self.attack_max_combo:
+                    self.attack_combo = 0
+
                 self.spr_index = 0
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
@@ -223,6 +234,7 @@ class MedievalWarrior(Object.Object):
             self.attack(self.is_detected_near_player)
         else:
             self.is_move = True
+            self.attack_combo = 0
 
         if self.player.is_attacking:
             if min(self.player.x, self.player.x + self.player.attack_range) < self.x and self.x < max(

@@ -212,7 +212,7 @@ def main():
 
     # level
     levels = [[],
-              [],
+              [MedievalWarrior.MedievalWarrior(800, 400, player)],
               [],
               [MartialHero.MartialHero(800, 400, player)],
               []]
