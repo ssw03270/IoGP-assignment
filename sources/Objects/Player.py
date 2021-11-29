@@ -114,6 +114,7 @@ class Player(Object.Object):
         self.set_sprite()
 
     def update(self):
+        print(self.state_index)
         # attack delay counting
         self.attack_delay += self.delta_time
         # hit delay counting
@@ -193,7 +194,7 @@ class Player(Object.Object):
         self.spr_list.append(lis[:])
         lis.clear()
 
-        # state is fall
+        # state is guard
         for i in range(0, 4):
             lis.append(self.spr_guard.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
@@ -227,6 +228,7 @@ class Player(Object.Object):
 
         # if player death
         else:
+            self.state_index = 5
             # animation not finished
             if math.floor(self.spr_index) <= len(self.spr_list[self.state_index]) - 1:
                 self.spr_index += 1 / self.spr_speed * self.delta_time
@@ -393,8 +395,9 @@ class Player(Object.Object):
             self.is_guard_on = True
 
     def guard_off(self):
-        self.state_index = 0
-        self.spr_index = 0
-        self.is_guard_on = False
+        if not self.is_player_death:
+            self.state_index = 0
+            self.spr_index = 0
+            self.is_guard_on = False
 
 

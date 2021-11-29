@@ -293,9 +293,7 @@ def main():
                     player.guard_on()
                 if event.key == pygame.K_r and player.is_player_death:
                     player = Player.Player(300, 355)
-                    healths = [UiHealth.UiHealth(50, 100, player, 1), UiHealth.UiHealth(90, 100, player, 2),
-                               UiHealth.UiHealth(130, 100, player, 3), UiHealth.UiHealth(170, 100, player, 4),
-                               UiHealth.UiHealth(210, 100, player, 5)]
+
                     died = UiDied.UiDied(360, 270, player)
 
                     # level
