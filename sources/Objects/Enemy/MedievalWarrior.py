@@ -60,7 +60,7 @@ class MedievalWarrior(Object.Object):
 
         # flower enemy hit
         self.hit_delay = 0
-        self.hit_max_delay = 1000
+        self.hit_max_delay = 500
         self.is_hit_able = True
 
         # palyer death
@@ -141,10 +141,14 @@ class MedievalWarrior(Object.Object):
     def draw_image(self):
         # if player live, playing animation
         if not self.is_enemy_die:
+            if self.state_index >= 2 and self.state_index <= 4:
+                if math.floor(self.spr_index) > (len(self.spr_list[self.state_index]) - 1) / 2:
+                    self.player.hit(self.damage)
+
             # if current index over than max index
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 # if flower enemy attack
-                if self.state_index >= 2 or self.state_index <= 4:
+                if self.state_index >= 2 and self.state_index <= 4:
                     self.state_index = 0
                 # if flower enemy hit
                 elif self.state_index == 6:
@@ -183,7 +187,7 @@ class MedievalWarrior(Object.Object):
             # player attack
             if self.is_attack_able:
                 if self.attack_combo < self.attack_max_combo:
-                    self.attack_max_delay = 500
+                    self.attack_max_delay = 750
                 elif self.attack_combo == self.attack_max_combo:
                     self.attack_max_delay = 2000
 
@@ -196,7 +200,6 @@ class MedievalWarrior(Object.Object):
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
                 self.is_move_able = False
-                self.player.hit(self.damage)
 
     def hit(self, damage):
         if not self.is_enemy_die:

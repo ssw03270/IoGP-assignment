@@ -57,13 +57,13 @@ class Player(Object.Object):
         self.attack_range = 100
         self.attack_combo = 0
         self.attack_delay = 0
-        self.attack_max_delay = 1500
+        self.attack_max_delay = 500
         self.is_attack_able = True
         self.is_attacking = False
 
         # player hit
         self.hit_delay = 0
-        self.hit_max_delay = 1000
+        self.hit_max_delay = 500
         self.is_hit_able = True
 
         # player dash
