@@ -242,8 +242,11 @@ class MedievalWarrior(Object.Object):
         if self.player.is_attacking:
             if min(self.player.x, self.player.x + self.player.attack_range) < self.x and self.x < max(
                     self.player.x, self.player.x + self.player.attack_range):
-                self.hit(self.player.attack_damage)
-                self.player.is_attacking = False
+
+                if self.player.state_index == 3:
+                    if math.floor(self.player.spr_index) > (len(self.player.spr_list[self.player.state_index]) - 1) / 2:
+                        self.hit(self.player.attack_damage)
+                        self.player.is_attacking = False
 
     def move(self):
         # move delay
