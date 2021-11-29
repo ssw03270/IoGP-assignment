@@ -16,6 +16,7 @@ class MartialHero(Object.Object):
         self.health = self.max_health
         self.name = "Martial Hero"
         self.ability = []
+        self.passe = 1
 
         # flower enemy image
         self.spr_idle = pygame.image.load("../sprites/MartialHero/Idle.png").convert_alpha()        # 0
@@ -64,9 +65,13 @@ class MartialHero(Object.Object):
 
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 2000
+        self.attack_max_delay = 3000
         self.is_attack_able = False
-        self.damage = 1
+        self.damage = 3
+
+        self.attack_passe_two_count = 0
+        self.attack_passe_two_max_count = 5
+        self.attack_passe_two_max_delay = 500
 
         # flower enemy hit
         self.hit_delay = 0
@@ -82,7 +87,7 @@ class MartialHero(Object.Object):
         # sprite information
         self.spr_width = 200
         self.spr_height = 200
-        self.spr_speed = 100
+        self.spr_speed = 50
         self.spr_index = 0
         self.spr_size = 2
         self.spr_list = []
@@ -108,6 +113,9 @@ class MartialHero(Object.Object):
             self.dash()
         for star in self.ability:
             star.update()
+
+        if self.health < self.max_health / 2:
+            self.passe = 2
 
     def set_sprite(self):
         lis = []
@@ -160,9 +168,6 @@ class MartialHero(Object.Object):
                 if math.floor(self.spr_index) > (len(self.spr_list[self.state_index]) - 1) / 2:
                     if self.state_index <= 3:
                         self.player.hit(self.damage)
-                    else:
-                        if len(self.ability) < 1:
-                            self.ability.append(Star.Star(self.x, self.y, self.direction, self.player, self))
             # if current index over than max index
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 # if flower enemy attack
@@ -203,7 +208,7 @@ class MartialHero(Object.Object):
                 self.is_move_able = True
 
             # player attack
-            if self.is_attack_able:
+            if self.is_attack_able and self.passe == 1:
                 if is_near:
                     self.state_index = random.randrange(2, 4)
                 elif is_far:
@@ -212,6 +217,31 @@ class MartialHero(Object.Object):
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
                 self.is_move_able = False
+
+            elif self.is_attack_able and self.passe == 2:
+                if is_near:
+                    if self.attack_passe_two_count < self.attack_passe_two_max_count:
+                        self.attack_max_delay = self.attack_passe_two_max_delay
+                    elif self.attack_passe_two_count >= self.attack_passe_two_max_count:
+                        self.attack_max_delay = 3000
+                    self.state_index = self.attack_passe_two_count % 2 + 2
+                    self.attack_passe_two_count += 1
+                elif is_far:
+                    if self.attack_passe_two_count < self.attack_passe_two_max_count / 2:
+                        self.attack_max_delay = self.attack_passe_two_max_delay
+                    elif self.attack_passe_two_count >= self.attack_passe_two_max_count / 2:
+                        self.attack_max_delay = 3000
+                    self.state_index = 4
+                    self.ability.append(Star.Star(self.x, self.y, self.direction, self.player, self))
+                    self.attack_passe_two_count += 1
+
+                self.spr_index = 0
+                pygame.mixer.Sound.play(self.sound_attack)
+                self.is_attack_able = False
+                self.is_move_able = False
+
+                if self.attack_passe_two_count > self.attack_passe_two_max_count:
+                    self.attack_passe_two_count = 0
 
     def hit(self, damage):
         if not self.is_enemy_die:
@@ -250,6 +280,7 @@ class MartialHero(Object.Object):
             self.attack(self.is_detected_far_player, self.is_detected_near_player)
         else:
             self.is_move = True
+            self.attack_passe_two_count = 0
 
         if self.player.is_attacking:
             if min(self.player.x, self.player.x + self.player.attack_range) < self.x and self.x < max(

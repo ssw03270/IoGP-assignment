@@ -12,8 +12,8 @@ class Player(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
 
-        self.health = 10
         self.max_health = 10
+        self.health = self.max_health
         self.energy = 10
         self.max_energy = 10
         self.attack_damage = 1
