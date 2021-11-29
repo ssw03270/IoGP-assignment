@@ -177,8 +177,8 @@ def draw_enemy_health(enemy):
 
     pygame.draw.rect(screen, gray, [145, 51, 426, 18])
 
-    pygame.draw.rect(screen, red, [150, 50, 420 * (enemy_health / enemy_max_health), 20])
-    pygame.draw.rect(screen, red, [148, 52, 420 * (enemy_health / enemy_max_health) + 4, 16])
+    pygame.draw.rect(screen, red, [150, 50, 425 * (enemy_health / enemy_max_health) - 5, 20])
+    pygame.draw.rect(screen, red, [148, 52, 425 * (enemy_health / enemy_max_health), 16])
 
 def draw_player_ui(player):
     player_max_health = player.max_health
@@ -191,16 +191,16 @@ def draw_player_ui(player):
 
     pygame.draw.rect(screen, gray, [45, 476, 126, 18])
 
-    pygame.draw.rect(screen, red, [50, 475, 120 * (player_health / player_max_health), 20])
-    pygame.draw.rect(screen, red, [46, 477, 120 * (player_health / player_max_health) + 6, 16])
+    pygame.draw.rect(screen, red, [50, 475, 125 * (player_health / player_max_health) - 5, 20])
+    pygame.draw.rect(screen, red, [46, 477, 125 * (player_health / player_max_health), 16])
 
     pygame.draw.rect(screen, black, [48, 498, 123, 24])
     pygame.draw.rect(screen, black, [47, 500, 128, 20])
 
     pygame.draw.rect(screen, gray, [45, 501, 126, 18])
 
-    pygame.draw.rect(screen, blue, [50, 500, 120 * (player_energy / player_max_energy), 20])
-    pygame.draw.rect(screen, blue, [46, 502, 120 * (player_energy / player_max_energy) + 6, 16])
+    pygame.draw.rect(screen, blue, [50, 500, 125 * (player_energy / player_max_energy) - 5, 20])
+    pygame.draw.rect(screen, blue, [46, 502, 125 * (player_energy / player_max_energy), 16])
 
 def main():
     # object
