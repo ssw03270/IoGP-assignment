@@ -61,7 +61,7 @@ class Player(Object.Object):
         self.attack_max_delay = 500
         self.is_attack_able = True
         self.is_attacking = False
-        self.attack_energy = 2
+        self.attack_energy = 1
 
         # player hit
         self.hit_delay = 0
@@ -379,10 +379,12 @@ class Player(Object.Object):
 
     def guard_on(self):
         self.state_index = 8
+        self.spr_index = 0
         self.is_guard_on = True
 
     def guard_off(self):
         self.state_index = 0
+        self.spr_index = 0
         self.is_guard_on = False
 
 
