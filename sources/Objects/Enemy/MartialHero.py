@@ -61,6 +61,7 @@ class MartialHero(Object.Object):
         self.dash_max_range = 200
         self.dash_delay = 0
         self.dash_max_delay = 10000
+        self.dash_direction = True
         self.is_dash_able = True
 
         # flower enemy attack
@@ -70,7 +71,7 @@ class MartialHero(Object.Object):
         self.damage = 3
 
         self.attack_passe_two_count = 0
-        self.attack_passe_two_max_count = 5
+        self.attack_passe_two_max_count = 3
         self.attack_passe_two_max_delay = 500
 
         # flower enemy hit
@@ -336,10 +337,11 @@ class MartialHero(Object.Object):
                 self.is_dash_able = False
                 self.is_invincibility_able = True
                 self.dash_range = 0
+                self.dash_direction = self.direction
 
             # invincibility time
             if self.is_invincibility_able:
-                if not self.direction:
+                if not self.dash_direction:
                     self.x += self.dash_point
                 else:
                     self.x -= self.dash_point

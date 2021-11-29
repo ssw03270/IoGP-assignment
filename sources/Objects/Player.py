@@ -1,6 +1,7 @@
 import pygame
 import math
 from . import Object
+from .Ability import GuardEffect
 
 class Player(Object.Object):
     def __init__(self, x, y):
@@ -95,6 +96,7 @@ class Player(Object.Object):
         # player guard
         self.is_guard_on = False
         self.guard_energy = 2
+        self.guard_effect = []
 
         # player state
         self.state_index = 0
@@ -137,6 +139,9 @@ class Player(Object.Object):
             self.energy -= self.guard_energy / self.delta_time
             if self.energy < self.guard_energy / self.delta_time:
                 self.guard_off()
+
+        for guard_effect in self.guard_effect:
+            guard_effect.update()
 
     def set_sprite(self):
         lis = []
@@ -331,6 +336,10 @@ class Player(Object.Object):
                 self.health -= damage
                 self.is_hit_able = False
                 self.is_move_able = False
+
+            if self.is_hit_able and self.is_guard_on:
+                if len(self.guard_effect) < 1:
+                    self.guard_effect.append(GuardEffect.GuardEffect(self.x, self.y, self))
 
             if self.health <= 0:
                 self.state_index = 5

@@ -250,6 +250,8 @@ def main():
 
         # set delta time of each object
         player.delta_time = delta_time
+        for guard_effect in player.guard_effect:
+            guard_effect.delta_time = delta_time
         for obj in levels[level_index]:
             obj.delta_time = delta_time
             for ability in obj.ability:
@@ -303,13 +305,17 @@ def main():
                 if event.key == pygame.K_LALT:
                     player.guard_off()
         # draw object
-        if not level_index == 0:
-            draw(player)
-            draw_player_ui(player)
         for obj in levels[level_index]:
             draw(obj)
             for ability in obj.ability:
                 draw(ability)
+
+        if not level_index == 0:
+            draw(player)
+            draw_player_ui(player)
+            for guard_effect in player.guard_effect:
+                draw(guard_effect)
+
         if player.is_player_death:
             draw(died)
         for obj in levels[level_index]:
