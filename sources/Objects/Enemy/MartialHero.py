@@ -50,14 +50,14 @@ class MartialHero(Object.Object):
         self.is_move_sound_play = False
         self.is_move = False
         self.is_move_able = True
-        self.move_speed = 0.1
+        self.move_speed = 0.3
         self.move_delay = 0
         self.move_max_delay = 1000
 
         # dash
         self.dash_point = 15
         self.dash_range = 0
-        self.dash_max_range = 150
+        self.dash_max_range = 200
         self.dash_delay = 0
         self.dash_max_delay = 10000
         self.is_dash_able = True
@@ -302,7 +302,6 @@ class MartialHero(Object.Object):
                 self.is_dash_able = False
                 self.is_invincibility_able = True
                 self.dash_range = 0
-                self.dash_max_range = math.fabs(self.player.x - self.x)
 
             # invincibility time
             if self.is_invincibility_able:

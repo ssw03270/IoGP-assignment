@@ -11,7 +11,7 @@ class Star(Object.Object):
         self.direction = direction
         self.delta_time = 0
         self.max_distance = 50
-        self.damage = 3
+        self.damage = 2
 
         # flower enemy image
         self.spr_star = pygame.image.load("../sprites/MartialHero/Star.png").convert_alpha()        # 0
