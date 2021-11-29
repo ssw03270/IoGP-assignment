@@ -287,6 +287,8 @@ def main():
                     player.attack()
                 if event.key == pygame.K_SPACE:
                     player.jump()
+                if event.key == pygame.K_LALT:
+                    player.guard_on()
                 if event.key == pygame.K_r and player.is_player_death:
                     player = Player.Player(300, 355)
                     healths = [UiHealth.UiHealth(50, 100, player, 1), UiHealth.UiHealth(90, 100, player, 2),
@@ -297,7 +299,9 @@ def main():
                     # level
                     levels = levels
                     level_index = 0
-
+            if event.type == pygame.KEYUP and not level_index == 0:
+                if event.key == pygame.K_LALT:
+                    player.guard_off()
         # draw object
         if not level_index == 0:
             draw(player)

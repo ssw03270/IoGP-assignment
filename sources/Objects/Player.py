@@ -27,6 +27,7 @@ class Player(Object.Object):
         self.spr_death = pygame.image.load("../sprites/HeroKnight/Death.png").convert_alpha()       # 5
         self.spr_jump = pygame.image.load("../sprites/HeroKnight/Jump.png").convert_alpha()         # 6
         self.spr_fall = pygame.image.load("../sprites/HeroKnight/Fall.png").convert_alpha()         # 7
+        self.spr_guard = pygame.image.load("../sprites/HeroKnight/Guard.png").convert_alpha()         # 8
 
         # player sound
         self.sound_walk = pygame.mixer.Sound("../sounds/player/walk.mp3")
@@ -60,6 +61,7 @@ class Player(Object.Object):
         self.attack_max_delay = 500
         self.is_attack_able = True
         self.is_attacking = False
+        self.attack_energy = 2
 
         # player hit
         self.hit_delay = 0
@@ -73,6 +75,7 @@ class Player(Object.Object):
         self.dash_delay = 0
         self.dash_max_delay = 1000
         self.is_dash_able = True
+        self.dash_energy = 5
 
         # player jump
         self.is_jump_able = True
@@ -80,6 +83,7 @@ class Player(Object.Object):
         self.jump_point = 0
         self.jump_start_point = self.y
         self.jump_max_range = math.sin(math.pi) * self.jump_speed
+        self.jump_energy = 3
 
         # player invincibility
         self.is_invincibility_able = False
@@ -87,6 +91,10 @@ class Player(Object.Object):
 
         # player death
         self.is_player_death = False
+
+        # player guard
+        self.is_guard_on = False
+        self.guard_energy = 2
 
         # player state
         self.state_index = 0
@@ -118,6 +126,17 @@ class Player(Object.Object):
             self.dash()
         else:
             self.sound_walk.stop()
+        # energy
+        self.energy += 1 / self.delta_time
+        if self.energy > self.max_energy:
+            self.energy = self.max_energy
+        elif self.energy < 0:
+            self.energy = 0
+
+        if self.is_guard_on:
+            self.energy -= self.guard_energy / self.delta_time
+            if self.energy < self.guard_energy / self.delta_time:
+                self.guard_off()
 
     def set_sprite(self):
         lis = []
@@ -167,6 +186,13 @@ class Player(Object.Object):
         for i in range(0, 4):
             lis.append(self.spr_fall.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is fall
+        for i in range(0, 4):
+            lis.append(self.spr_guard.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
 
     def draw_image(self):
         # if player live, playing animation
@@ -214,7 +240,7 @@ class Player(Object.Object):
         if not self.is_player_death:
 
             # player jump
-            if not self.is_jump_able:
+            if not self.is_jump_able and not self.is_guard_on:
                 self.y = self.jump_start_point + -1 * math.sin(self.jump_point) * self.jump_speed
                 self.jump_point += math.pi / self.delta_time * 2
 
@@ -236,7 +262,7 @@ class Player(Object.Object):
             keys = pygame.key.get_pressed()
 
             # if player move
-            if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able and not self.is_invincibility_able:
+            if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able and not self.is_invincibility_able and not self.is_guard_on:
                 if not self.state_index == 6 and not self.state_index == 7:
                     self.state_index = 1
 
@@ -281,10 +307,11 @@ class Player(Object.Object):
                 self.is_attack_able = True
 
             # player attack
-            if self.is_attack_able:
+            if self.is_attack_able and not self.is_guard_on and self.energy >= self.attack_energy:
                 self.spr_index = 0
                 self.state_index = 3
                 pygame.mixer.Sound.play(self.sound_attack1)
+                self.energy -= self.attack_energy
 
                 self.is_move_able = False
                 self.is_attack_able = False
@@ -298,7 +325,7 @@ class Player(Object.Object):
                 self.hit_delay = 0
                 self.is_hit_able = True
 
-            if self.is_hit_able:
+            if self.is_hit_able and not self.is_guard_on:
                 self.state_index = 4
                 self.spr_index = 0
                 self.health -= damage
@@ -319,13 +346,14 @@ class Player(Object.Object):
 
             # if player dash
             keys = pygame.key.get_pressed()
-            if (keys[pygame.K_LSHIFT]) and self.is_dash_able:
+            if (keys[pygame.K_LSHIFT]) and self.is_dash_able and not self.is_guard_on and self.energy >= self.dash_energy:
                 self.is_dash_able = False
                 self.is_invincibility = True
                 self.is_invincibility_able = True
                 self.dash_range = 0
                 if not self.state_index == 3:
                     self.state_index = 2
+                    self.energy -= self.dash_energy
 
             # invincibility time
             if self.is_invincibility_able:
@@ -345,6 +373,16 @@ class Player(Object.Object):
 
     def jump(self):
         if not self.is_player_death:
-            if self.is_jump_able:
+            if self.is_jump_able and self.energy >= self.jump_energy:
                 self.is_jump_able = False
+                self.energy -= self.jump_energy
+
+    def guard_on(self):
+        self.state_index = 8
+        self.is_guard_on = True
+
+    def guard_off(self):
+        self.state_index = 0
+        self.is_guard_on = False
+
 
