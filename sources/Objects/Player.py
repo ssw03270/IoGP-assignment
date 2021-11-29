@@ -387,9 +387,10 @@ class Player(Object.Object):
                 self.energy -= self.jump_energy
 
     def guard_on(self):
-        self.state_index = 8
-        self.spr_index = 0
-        self.is_guard_on = True
+        if not self.is_player_death:
+            self.state_index = 8
+            self.spr_index = 0
+            self.is_guard_on = True
 
     def guard_off(self):
         self.state_index = 0

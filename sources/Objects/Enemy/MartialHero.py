@@ -214,6 +214,7 @@ class MartialHero(Object.Object):
                     self.state_index = random.randrange(2, 4)
                 elif is_far:
                     self.state_index = 4
+                    self.ability.append(Star.Star(self.x, self.y, self.direction, self.player, self))
                 self.spr_index = 0
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
