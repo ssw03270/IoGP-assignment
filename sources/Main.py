@@ -213,7 +213,7 @@ def main():
     # level
     levels = [[],
               [MedievalWarrior.MedievalWarrior(800, 400, player)],
-              [],
+              [MartialHero.MartialHero(800, 400, player)],
               [MartialHero.MartialHero(800, 400, player)],
               []]
 
@@ -247,6 +247,9 @@ def main():
 
                 player.x = player_x
                 player.y = player_y
+
+                player.health = player.max_health
+                player.energy = player.max_energy
 
         # set delta time of each object
         player.delta_time = delta_time
