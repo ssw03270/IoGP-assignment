@@ -114,7 +114,6 @@ class Player(Object.Object):
         self.set_sprite()
 
     def update(self):
-        print(self.state_index)
         # attack delay counting
         self.attack_delay += self.delta_time
         # hit delay counting
@@ -340,6 +339,7 @@ class Player(Object.Object):
                 self.is_move_able = False
 
             if self.is_hit_able and self.is_guard_on:
+                self.is_move_able = True
                 if len(self.guard_effect) < 1:
                     self.guard_effect.append(GuardEffect.GuardEffect(self.x, self.y, self))
 

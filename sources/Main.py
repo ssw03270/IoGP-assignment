@@ -7,7 +7,7 @@
 import pygame, sys
 import time
 from sources.Objects import Object, Player
-from sources.Objects.UI import UiDied, UiHealth, UiEnemyHealth, Button
+from sources.Objects.UI import UiDied, UiHealth, UiEnemyHealth, Button, Paper
 from sources.Objects.Enemy import MedievalWarrior, MartialHero
 from sources import Tileset
 
@@ -49,6 +49,23 @@ def draw(object = Object.Object):
     sprite = object.draw_image()
     screen.blit(sprite, (x - object.spr_width / 2 * object.spr_size, y - object.spr_height / 2 * object.spr_size))
 
+def blit_text(surface, text, pos, font, color=pygame.Color('black')):
+    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = font.size(' ')[0]  # The width of a space.
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
+
 def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
     if level == 0:
         spr_title = pygame.image.load("../sprites/ui/Title.png").convert_alpha()
@@ -75,6 +92,22 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
         button_list.append(button2)
 
     elif level == 1:
+        content = " 아주 먼 옛날, 배고픈 기사 하나가 길을 가고 있었다. 명예나 권력을 좋아하던 보통의 기사들과는 달리, 그는 오직 먹는 것만 좋아할 뿐이었다.\n\n" \
+                  " 어느날 문득, 그는 왕의 점심은 얼마나 맛있을지에 대한 생각을 했다. 실행력이 좋았던 기사는 그 길로 곧장, 왕의 성으로 쳐들어가고자 했다. \n\n" \
+                  " 하지만 성문에는 문지기가 있었다. 아무래도 기사는 그를 뚫고 가야 할 듯 했다. \n\n\n\n" \
+                  " (방향키 : 이동, Shift : 대시, Alt : 방어,\n Ctrl : 공격, Space : 점프)"
+        paper = Paper.Paper(360, 270, "Paper", content)
+        button_list.append(paper)
+        draw(paper)
+
+        font = pygame.font.SysFont("휴먼편지체", 20)
+        new_content = ""
+        for content in paper.contents:
+            new_content += ''.join(content) + "\n"
+
+        blit_text(screen, new_content, paper.position(), font)
+
+    elif level == 2:
         for i in range(0, 18, 6):
             draw_sprite(tileset.draw_wall(20, 1, 27, 6), tileset, 496, i * tileset.real_size)
 
@@ -95,7 +128,24 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
 
         draw_sprite(tileset.draw_env_object(17, 0, 19, 3), tileset, 544, 300)
 
-    elif level == 2:
+    elif level == 3:
+        content = " 고작 문지기로는 온갖 산해진미를 먹으며 근육을 단련한 기사를 막을 수 없었다. 하지만 약간의 상처를 입는 건 어쩔 수 없었다. \n\n" \
+                  " 다행이 문지기의 뒷주머니에는 먹다 만 빵조각이 있었고, 기사는 참지 못하고 먹어버리고 말았다. \n\n" \
+                  " 양은 적었지만 기사가 회복하기에는 충분한 양이었다. 만반의 준비를 갖춘 기사는 이내 성 안으로 발걸음을 옮겼다 \n\n" \
+                  " 넓은 성안, 그곳에는 사무라이 하나가 뜬금없이 복도에 서있었다. 개발자의 예산 부족인지 뭔지는 모르겠지만 사무라이는 먼 나라에서 온 손님인 듯 했다. \n\n" \
+                  " 기사의 목표는 왕의 점심. 기사는 곧장 사무라이에게 달려들었다."
+        paper = Paper.Paper(360, 270, "Paper", content)
+        button_list.append(paper)
+        draw(paper)
+
+        font = pygame.font.SysFont("휴먼편지체", 20)
+        new_content = ""
+        for content in paper.contents:
+            new_content += ''.join(content) + "\n"
+
+        blit_text(screen, new_content, paper.position(), font)
+
+    elif level == 4:
         for i in range(0, 18, 4):
             draw_sprite(tileset.draw_wall(20, 12, 25, 15), tileset, 0, i * tileset.real_size)
             draw_sprite(tileset.draw_wall(20, 12, 25, 15), tileset, 6 * tileset.real_size, i * tileset.real_size)
@@ -132,8 +182,24 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
         if anim_light_level_2_index >= anim_light_level_2_max_index:
             anim_light_level_2_index = 0
 
+    elif level == 5:
+        content = " 사무라이는 꽤나 버거운 상대였지만 역시나 이번에도 기사가 승리했다. 사무라이의 품안에는 말린 다랑어가 하나 있었다. \n\n" \
+                  " 때마침 기사는 배가 고팠기에 그것을 먹고 기운을 차렸다. 성은 넓었지만 아마 넓은 복도를 따라 걸으면 왕의 식당이 나올 듯 했다. \n\n" \
+                  " 기사는 상처가 회복되기를 기다렸다가 다시 앞으로 나아갔다. 그리고 또 다시 누군가가 기사의 앞길을 막아세웠다. \n\n" \
+                  " 후드를 뒤집어 쓴, 심상치 않은 느낌의 마법사였다."
+        paper = Paper.Paper(360, 270, "Paper", content)
+        button_list.append(paper)
+        draw(paper)
 
-    elif level == 3:
+        font = pygame.font.SysFont("휴먼편지체", 20)
+        new_content = ""
+        for content in paper.contents:
+            new_content += ''.join(content) + "\n"
+
+        blit_text(screen, new_content, paper.position(), font)
+
+
+    elif level == 6:
         for i in range(0, 18, 5):
             draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 0, i * tileset.real_size)
             draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 4 * tileset.real_size, i * tileset.real_size)
@@ -212,8 +278,11 @@ def main():
 
     # level
     levels = [[],
+              [],
               [MedievalWarrior.MedievalWarrior(800, 400, player)],
+              [],
               [MartialHero.MartialHero(800, 400, player)],
+              [],
               [MartialHero.MartialHero(800, 400, player)],
               []]
 
@@ -227,6 +296,7 @@ def main():
     tileset = Tileset.Tileset()
 
     while True:
+        print(level_index)
         # set fps
         delta_time = clock.tick(30)
         # check level
@@ -234,7 +304,7 @@ def main():
         for obj in levels[level_index]:
             if not obj.is_enemy_die:
                 is_all_enemy_die = False
-        if is_all_enemy_die and level_index + 1 < max_level_index and not level_index == 0:
+        if is_all_enemy_die and level_index + 1 < max_level_index and not level_index == 0 and not level_index % 2 == 1:
             is_next_level_able = True
 
         # is time to move next level
@@ -261,7 +331,7 @@ def main():
                 ability.delta_time = delta_time
 
         # update each object
-        if not level_index == 0:
+        if not level_index == 0 and not level_index % 2 == 1:
             player.update()
         for obj in levels[level_index]:
             obj.update()
@@ -286,8 +356,12 @@ def main():
                         player.y = player_y
                     elif value == "Exit":
                         sys.exit()
+                    elif value == "Paper":
+                        level_index += level_index % 2
+                        player.x = player_x
+                        player.y = player_y
 
-            if event.type == pygame.KEYDOWN and not level_index == 0:
+            if event.type == pygame.KEYDOWN and not level_index == 0 and not level_index % 2 == 1:
                 if event.key == pygame.K_LCTRL:
                     player.attack()
                 if event.key == pygame.K_SPACE:
@@ -302,7 +376,7 @@ def main():
                     # level
                     levels = levels
                     level_index = 0
-            if event.type == pygame.KEYUP and not level_index == 0:
+            if event.type == pygame.KEYUP and not level_index == 0 and not level_index % 2 == 1:
                 if event.key == pygame.K_LALT:
                     player.guard_off()
         # draw object
@@ -311,7 +385,7 @@ def main():
             for ability in obj.ability:
                 draw(ability)
 
-        if not level_index == 0:
+        if not level_index == 0 and not level_index % 2 == 1:
             draw(player)
             draw_player_ui(player)
             for guard_effect in player.guard_effect:
