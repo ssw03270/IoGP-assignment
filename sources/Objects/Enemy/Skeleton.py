@@ -11,7 +11,8 @@ class Skeleton(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
-        self.health = 3
+        self.max_health = 3
+        self.health = self.max_health
 
         # flower enemy image
         self.spr_idle = pygame.image.load("../sprites/Skeleton/Idle.png").convert_alpha()        # 0
@@ -35,7 +36,7 @@ class Skeleton(Object.Object):
         # check player detect
         self.player = player
         self.is_detected_player = False
-        self.max_distance = 60
+        self.max_distance = 100
 
         # about move
         self.is_move_sound_play = False
@@ -53,7 +54,7 @@ class Skeleton(Object.Object):
 
         # flower enemy hit
         self.hit_delay = 0
-        self.hit_max_delay = 1000
+        self.hit_max_delay = 500
         self.is_hit_able = True
 
         # palyer death
@@ -122,6 +123,9 @@ class Skeleton(Object.Object):
     def draw_image(self):
         # if player live, playing animation
         if not self.is_enemy_die:
+            if self.state_index == 2:
+                if math.floor(self.spr_index) > (len(self.spr_list[self.state_index]) - 1) / 2:
+                    self.player.hit(self.damage)
             # if current index over than max index
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 # if flower enemy attack
@@ -152,7 +156,7 @@ class Skeleton(Object.Object):
                 (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
             return sprite
 
-    def attack(self):
+    def attack(self, is_near):
         # if enemy flower doesn't death
         if not self.is_enemy_die:
             # check attack able
@@ -168,9 +172,8 @@ class Skeleton(Object.Object):
                 pygame.mixer.Sound.play(self.sound_attack)
                 self.is_attack_able = False
                 self.is_move_able = False
-                self.player.hit(self.damage)
 
-    def hit(self, damage):
+    def hit(self, damage): # 시발 데미지가 안 들어간다. 똑바로
         if not self.is_enemy_die:
             # check hit able
             if self.hit_delay >= self.hit_max_delay:
@@ -197,21 +200,25 @@ class Skeleton(Object.Object):
 
     def detected_player(self):
         if self.is_move_able:
-            self.direction = self.player.spr_x < self.spr_x
+            self.direction = self.player.x < self.x
 
-        distance = math.fabs(self.player.spr_x - self.spr_x)
+        distance = math.fabs(self.player.x - self.x)
         self.is_detected_player = distance < self.max_distance
 
         if self.is_detected_player:
             self.is_move = False
-            self.attack()
+            self.attack(self.is_detected_player)
         else:
             self.is_move = True
 
         if self.player.is_attacking:
-            if min(self.player.spr_x, self.player.spr_x + self.player.attack_range) < self.spr_x and self.spr_x < max(
-                    self.player.spr_x, self.player.spr_x + self.player.attack_range):
-                self.hit(self.player.attack_damage)
+            if min(self.player.x, self.player.x + self.player.attack_range) < self.x and self.x < max(
+                    self.player.x, self.player.x + self.player.attack_range):
+
+                if self.player.state_index == 3:
+                    if math.floor(self.player.spr_index) > (len(self.player.spr_list[self.player.state_index]) - 1) / 2:
+                        self.hit(self.player.attack_damage)
+                        self.player.is_attacking = False
 
     def move(self):
         # move delay

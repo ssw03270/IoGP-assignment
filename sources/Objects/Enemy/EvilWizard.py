@@ -12,7 +12,7 @@ class EvilWizard(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
-        self.max_health = 10
+        self.max_health = 20
         self.health = self.max_health
         self.name = "Evil Wizard"
         self.ability = []
@@ -52,7 +52,7 @@ class EvilWizard(Object.Object):
 
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 2000
+        self.attack_max_delay = 3000
         self.attack_combo = 0
         self.attack_max_combo = 1
         self.is_attack_able = True
@@ -62,6 +62,10 @@ class EvilWizard(Object.Object):
         self.hit_delay = 0
         self.hit_max_delay = 500
         self.is_hit_able = True
+
+        # ability
+        self.ability_delay = 0
+        self.ability_max_delay = 10000
 
         # palyer death
         self.is_enemy_die = False
@@ -89,10 +93,14 @@ class EvilWizard(Object.Object):
             self.attack_delay += self.delta_time
         if not self.is_move_able:
             self.move_delay += self.delta_time
+        self.ability_delay += self.delta_time
         # if flower enemy doesn't death
         if not self.is_enemy_die:
             self.detected_player()
             self.move()
+            self.use_ability()
+        for skeleton in self.ability:
+            skeleton.update()
 
     def set_sprite(self):
         lis = []
@@ -166,7 +174,7 @@ class EvilWizard(Object.Object):
             sprite = pygame.transform.scale(
                 pygame.transform.flip(self.spr_list[self.state_index][math.floor(self.spr_index)], self.direction,
                                       False),
-                (self.spr_width * self.spr_size, self.spr_height * self.spr_size))
+                (int(self.spr_width * self.spr_size), int(self.spr_height * self.spr_size)))
             return sprite
 
     def attack(self, is_near):
@@ -183,7 +191,7 @@ class EvilWizard(Object.Object):
                 if self.attack_combo < self.attack_max_combo:
                     self.attack_max_delay = 750
                 elif self.attack_combo == self.attack_max_combo:
-                    self.attack_max_delay = 2000
+                    self.attack_max_delay = 3000
 
                 self.state_index = self.attack_combo + 2
                 self.attack_combo += 1
@@ -218,6 +226,9 @@ class EvilWizard(Object.Object):
                 self.spr_index = 0
                 self.is_enemy_die = True
                 self.sound_death.play()
+
+                for skeleton in self.ability:
+                    skeleton.hit(10000)
 
     def detected_player(self):
         if self.is_move_able:
@@ -274,3 +285,13 @@ class EvilWizard(Object.Object):
             # set sprite idle
             if self.state_index == 1:
                 self.state_index = 0
+
+    def use_ability(self):
+        if not self.is_enemy_die:
+            if not self.state_index == 2 and not self.state_index == 3:
+                if self.ability_delay > self.ability_max_delay:
+                    if not self.direction:
+                        self.ability.append(Skeleton.Skeleton(800, 385, self.player))
+                    else:
+                        self.ability.append(Skeleton.Skeleton(-50, 385, self.player))
+                    self.ability_delay = 0

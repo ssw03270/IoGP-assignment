@@ -198,7 +198,6 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
 
         blit_text(screen, new_content, paper.position(), font)
 
-
     elif level == 6:
         for i in range(0, 18, 5):
             draw_sprite(tileset.draw_wall(14, 8, 17, 12), tileset, 0, i * tileset.real_size)
@@ -222,10 +221,56 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
             draw_sprite(tileset.draw_env_object(23, 27, 23, 30), tileset, i * 224 - 18, 64 + 32 * 6)
             draw_sprite(tileset.draw_env_object(22, 31, 24, 31), tileset, i * 224 - 50, 64 + 32 * 10)
 
-def draw_sprite(sprite, tileset, start_x, start_y):
+    elif level == 7:
+        content = " 마법사가 소환하는 해골 탓에 꽤나 성가셨지만 기사는 어찌어찌 쳐치하는데 성공했다. 역시나 기사는 배고픔을 해결하기 위해 마법사의 옷을 뒤적였다.\n\n" \
+                  " 그러나 마법사가 가진 것이라고는 정체불명의 핏덩어리 뿐이었다. 아무리 기사가 대식가라고는 하지만 이건 무리였다. \n\n" \
+                  " 이후 기사는 다시 앞으로 나아갔다. 곧, 그는 쌍둥이를 만날 수 있었다. 그녀들은 똑 닮았으며, 날카라운 창을 들고 있었다. \n\n" \
+                  " 그리고 이번에도 기사는 왕의 점심을 먹기 위해 앞으로 나아갔다."
+        paper = Paper.Paper(360, 270, "Paper", content)
+        button_list.append(paper)
+        draw(paper)
+
+        font = pygame.font.SysFont("휴먼편지체", 20)
+        new_content = ""
+        for content in paper.contents:
+            new_content += ''.join(content) + "\n"
+
+        blit_text(screen, new_content, paper.position(), font)
+
+    elif level == 8:
+        for i in range(0, 18, 4):
+            draw_sprite(tileset.draw_wall_far(20, 12, 25, 15), tileset, 0, i * tileset.real_size, 32, 96, 96, 64 + 192)
+            draw_sprite(tileset.draw_wall_far(20, 12, 25, 15), tileset, 6 * tileset.real_size, i * tileset.real_size, 32 + 6 * 32, 96, 96 + 6 * 32, 64 + 192)
+            draw_sprite(tileset.draw_wall_far(20, 12, 25, 15), tileset, 12 * tileset.real_size, i * tileset.real_size, 32 + 12 * 32, 96, 96 + 12 * 32, 64 + 192)
+            draw_sprite(tileset.draw_wall_far(20, 12, 25, 15), tileset, 18 * tileset.real_size, i * tileset.real_size, 32 + 18 * 32, 96, 96 + 18 * 32, 64 + 192)
+
+        for i in range(0, 24, 6):
+            draw_sprite(tileset.draw_wall_far(20, 12, 22, 12), tileset, 32 + i * 32, 96)
+            draw_sprite(tileset.draw_wall_far(20, 13, 20, 13), tileset, 32 + i * 32, 128)
+            draw_sprite(tileset.draw_wall_far(20, 13, 20, 13), tileset, 96 + i * 32, 128)
+            draw_sprite(tileset.draw_env_object_far(0, 16, 2, 21), tileset, 32 + i * 32, 96)
+
+        for i in range(0, 24, 2):
+            draw_sprite(tileset.draw_env_object(14, 18, 15, 18), tileset, i * tileset.real_size, 400)
+
+        for i in range(0, 24, 3):
+            draw_sprite(tileset.draw_ground(1, 0, 3, 2), tileset, i * tileset.real_size, 400)
+
+        for i in range(0, 24):
+            draw_sprite(tileset.draw_ground(0, 4, 0, 4), tileset, i * tileset.real_size, 400 + tileset.real_size * 2)
+            draw_sprite(tileset.draw_ground(0, 4, 0, 4), tileset, i * tileset.real_size, 400 + tileset.real_size * 3)
+            draw_sprite(tileset.draw_ground(0, 4, 0, 4), tileset, i * tileset.real_size, 400 + tileset.real_size * 4)
+
+        for i in range(0, 24, 2):
+            draw_sprite(tileset.draw_env_object_far(14, 18, 15, 18), tileset, i * tileset.real_size, 0)
+            draw_sprite(tileset.draw_env_object_far(14, 16, 15, 16), tileset, i * tileset.real_size, 32)
+
+def draw_sprite(sprite, tileset, start_x, start_y, not_x1 = -1, not_y1 = -1, not_x2 = -1, not_y2 = -1):
     for x in range(len(sprite)):
         for y in range(len(sprite[x])):
-            screen.blit(sprite[x][y], (start_x + x * tileset.real_size, start_y + y * tileset.real_size))
+            if not (start_x + x * tileset.real_size >= not_x1 and start_x + x * tileset.real_size <= not_x2 \
+                    and start_y + y * tileset.real_size >= not_y1 and start_y + y * tileset.real_size <= not_y2):
+                screen.blit(sprite[x][y], (start_x + x * tileset.real_size, start_y + y * tileset.real_size))
 
 def draw_enemy_health(enemy):
     enemy_max_health = enemy.max_health
@@ -279,11 +324,12 @@ def main():
     # level
     levels = [[],
               [],
+              [MedievalWarrior.MedievalWarrior(800, 400, player)],
+              [],
+              [MartialHero.MartialHero(800, 400, player)],
+              [],
               [EvilWizard.EvilWizard(800, 375, player)],
               [],
-              [MartialHero.MartialHero(800, 400, player)],
-              [],
-              [MartialHero.MartialHero(800, 400, player)],
               []]
 
     level_index = 0
@@ -296,7 +342,6 @@ def main():
     tileset = Tileset.Tileset()
 
     while True:
-        print(level_index)
         # set fps
         delta_time = clock.tick(30)
         # check level

@@ -17,7 +17,7 @@ class Player(Object.Object):
         self.health = self.max_health
         self.energy = 10
         self.max_energy = 10
-        self.attack_damage = 1
+        self.attack_damage = 100
 
         # player image
         self.spr_idle = pygame.image.load("../sprites/HeroKnight/Idle.png").convert_alpha()         # 0
