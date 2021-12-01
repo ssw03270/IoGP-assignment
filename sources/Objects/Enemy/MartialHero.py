@@ -291,7 +291,6 @@ class MartialHero(Object.Object):
                 if self.player.state_index == 3:
                     if math.floor(self.player.spr_index) > (len(self.player.spr_list[self.player.state_index]) - 1) / 2:
                         self.hit(self.player.attack_damage)
-                        self.player.is_attacking = False
 
     def move(self):
         # move delay
