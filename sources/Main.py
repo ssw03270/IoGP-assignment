@@ -415,6 +415,8 @@ def main():
             if event.type == pygame.KEYDOWN and not level_index == 0 and not level_index % 2 == 1:
                 if event.key == pygame.K_z:
                     player.attack()
+                if event.key == pygame.K_c:
+                    player.kick()
                 if event.key == pygame.K_SPACE:
                     player.jump()
                 # if event.key == pygame.K_x:

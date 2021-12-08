@@ -75,6 +75,13 @@ class Player(Object.Object):
         self.punch_max_delay = 2000
         self.punch_energy = 0.2
 
+        self.kick_combo = 0
+        self.kick_max_combo = 1
+        self.kick_delay = 0
+        self.kick_max_delay = 450
+        self.kick_normal_max_delay = 450
+        self.kick_combo_max_delay = 2000
+
         self.is_attack_able = True
         self.is_attacking = False
         self.attack_energy = 1
@@ -134,6 +141,7 @@ class Player(Object.Object):
         # attack delay counting
         self.attack_delay += self.delta_time
         self.punch_delay += self.delta_time
+        self.kick_delay += self.delta_time
         # hit delay counting
         if not self.is_hit_able:
             self.hit_delay += self.delta_time
@@ -162,7 +170,7 @@ class Player(Object.Object):
         for guard_effect in self.guard_effect:
             guard_effect.update()
 
-        self.is_attacking_state = (3 <= self.state_index and self.state_index <= 5) or (11 == self.state_index)
+        self.is_attacking_state = (3 <= self.state_index and self.state_index <= 5) or (11 == self.state_index) or (12 <= self.state_index and self.state_index <= 13)
     def set_sprite(self):
         lis = []
 
@@ -237,6 +245,20 @@ class Player(Object.Object):
         # state is punch 11
         for i in range(0, 12):
             lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 29 * self.spr_height, self.spr_width,
+                                                               self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is kick 12
+        for i in range(0, 4):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 31 * self.spr_height, self.spr_width,
+                                                               self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is kick 13
+        for i in range(4, 8):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 31 * self.spr_height, self.spr_width,
                                                                self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
@@ -408,6 +430,32 @@ class Player(Object.Object):
             self.is_attack_able = False
             self.is_attacking = True
             self.attack_delay = 0
+
+    def kick(self):
+        # if player doesn't death
+        if not self.is_player_death:
+
+            if self.kick_delay >= self.kick_max_delay:
+                self.kick_delay = 0
+                self.is_attack_able = True
+
+            # player attack
+            if self.is_attack_able and not self.is_guard_on and self.energy >= self.attack_energy:
+                self.spr_index = 0
+                self.state_index = 12 + self.kick_combo
+                self.kick_combo += 1
+                self.kick_max_delay = self.kick_normal_max_delay
+                if self.kick_combo > self.kick_max_combo:
+                    self.kick_combo = 0
+                    self.kick_max_delay = self.kick_combo_max_delay
+
+                pygame.mixer.Sound.play(self.sound_attack1)
+                self.energy -= self.attack_energy
+
+                self.is_move_able = False
+                self.is_attack_able = False
+                self.is_attacking = True
+                self.attack_delay = 0
 
     def hit(self, damage):
         if not self.is_player_death and not self.is_invincibility:
