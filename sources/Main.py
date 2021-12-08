@@ -408,11 +408,13 @@ def main():
                         player.x = player_x
                         player.y = player_y
 
+            if event.type == pygame.KEYUP and not level_index == 0 and not level_index % 2 == 1:
+                if event.key == pygame.K_x:
+                    player.punch_end()
+
             if event.type == pygame.KEYDOWN and not level_index == 0 and not level_index % 2 == 1:
                 if event.key == pygame.K_z:
                     player.attack()
-                if event.key == pygame.K_x:
-                    player.punch()
                 if event.key == pygame.K_SPACE:
                     player.jump()
                 # if event.key == pygame.K_x:

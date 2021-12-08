@@ -213,6 +213,7 @@ class MedievalWarrior(Object.Object):
                 self.state_index = 6
                 self.spr_index = 0
                 self.health -= damage
+                print(damage)
                 self.is_hit_able = False
                 self.sound_hit.play()
                 self.move_delay = 0
@@ -245,8 +246,7 @@ class MedievalWarrior(Object.Object):
                     self.player.x, self.player.x + self.player.attack_range):
 
                 if self.player.is_attacking_state:
-                    if math.floor(self.player.spr_index) > (len(self.player.spr_list[self.player.state_index]) - 1) / 2:
-                        self.hit(self.player.attack_damage)
+                    self.hit(self.player.attack_damage)
 
     def move(self):
         # move delay
