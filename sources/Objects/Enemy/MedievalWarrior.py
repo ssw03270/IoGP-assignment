@@ -52,7 +52,7 @@ class MedievalWarrior(Object.Object):
 
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 2000
+        self.attack_max_delay = 750
         self.attack_combo = 0
         self.attack_max_combo = 2
         self.is_attack_able = True

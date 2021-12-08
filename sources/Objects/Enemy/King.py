@@ -1,6 +1,7 @@
 import pygame
 import math, random
 from sources.Objects import Object, Player
+from sources.Objects.Ability import Sword
 
 class King(Object.Object):
     def __init__(self, x, y, player = Player.Player):
@@ -50,13 +51,27 @@ class King(Object.Object):
         self.move_delay = 0
         self.move_max_delay = 1000
 
+        # dash
+        self.dash_point = 15
+        self.dash_range = 0
+        self.dash_max_range = 200
+        self.dash_delay = 0
+        self.dash_max_delay = 5000
+        self.dash_direction = True
+        self.is_dash_able = True
+
         # flower enemy attack
         self.attack_delay = 0
         self.attack_max_delay = 2000
         self.attack_combo = 0
         self.attack_max_combo = 2
         self.is_attack_able = True
-        self.damage = 1
+        self.damage = 3
+
+        self.ability_delay = 0
+        self.ability_max_delay = 3000
+        self.ability_real_max_delay = self.ability_max_delay
+        self.ability_down_by_health = 2000 * self.health / self.max_health
 
         # flower enemy hit
         self.hit_delay = 0
@@ -89,10 +104,23 @@ class King(Object.Object):
             self.attack_delay += self.delta_time
         if not self.is_move_able:
             self.move_delay += self.delta_time
+        if not self.is_dash_able:
+            self.dash_delay += self.delta_time
         # if flower enemy doesn't death
         if not self.is_enemy_die:
             self.detected_player()
             self.move()
+            self.dash()
+
+        self.ability_max_delay = self.ability_real_max_delay - self.ability_down_by_health
+
+        for sword in self.ability:
+            sword.update()
+
+        self.ability_delay += self.delta_time
+        if self.ability_delay > self.ability_max_delay:
+            self.ability.append(Sword.Sword(self.x, self.y, (0, 0), self.player, self))
+            self.ability_delay = 0
 
     def set_sprite(self):
         lis = []
@@ -279,3 +307,29 @@ class King(Object.Object):
             # set sprite idle
             if self.state_index == 1:
                 self.state_index = 0
+
+    def dash(self):
+        if not self.is_enemy_die:
+            # check dash able
+            if self.dash_delay >= self.dash_max_delay:
+                self.dash_delay = 0
+                self.is_dash_able = True
+
+            # if dash
+            if self.is_dash_able:
+                self.is_dash_able = False
+                self.is_invincibility_able = True
+                self.dash_range = 0
+                self.dash_direction = self.direction
+
+            # invincibility time
+            if self.is_invincibility_able:
+                if not self.dash_direction:
+                    self.x += self.dash_point
+                else:
+                    self.x -= self.dash_point
+                self.dash_range += self.dash_point
+
+                # if dash range is over than max range
+                if self.dash_range > self.dash_max_range:
+                    self.is_invincibility_able = False

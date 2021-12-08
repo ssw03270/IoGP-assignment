@@ -52,7 +52,7 @@ class EvilWizard(Object.Object):
 
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 3000
+        self.attack_max_delay = 1000
         self.attack_combo = 0
         self.attack_max_combo = 1
         self.is_attack_able = True
@@ -65,7 +65,7 @@ class EvilWizard(Object.Object):
 
         # ability
         self.ability_delay = 0
-        self.ability_max_delay = 10000
+        self.ability_max_delay = 5000
 
         # palyer death
         self.is_enemy_die = False
@@ -191,7 +191,7 @@ class EvilWizard(Object.Object):
                 if self.attack_combo < self.attack_max_combo:
                     self.attack_max_delay = 750
                 elif self.attack_combo == self.attack_max_combo:
-                    self.attack_max_delay = 3000
+                    self.attack_max_delay = 1000
 
                 self.state_index = self.attack_combo + 2
                 self.attack_combo += 1

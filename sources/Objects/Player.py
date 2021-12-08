@@ -9,11 +9,11 @@ class Player(Object.Object):
         self.x = x
         self.y = y
         self.width = 44
-        self.height = 20
+        self.height = 10
         self.delta_time = 0
         self.real_x = self.x
 
-        self.max_health = 10
+        self.max_health = 20
         self.health = self.max_health
         self.max_energy = 20
         self.energy = self.max_energy
@@ -94,7 +94,7 @@ class Player(Object.Object):
         # player dash
         self.dash_point = 15
         self.dash_range = 0
-        self.dash_max_range = 150
+        self.dash_max_range = 200
         self.dash_delay = 0
         self.dash_max_delay = 1000
         self.is_dash_able = True
@@ -156,7 +156,7 @@ class Player(Object.Object):
         else:
             self.sound_walk.stop()
         # energy
-        self.energy += 1 / self.delta_time
+        self.energy += 1 / self.delta_time * 2
         if self.energy > self.max_energy:
             self.energy = self.max_energy
         elif self.energy < 0:
@@ -342,12 +342,14 @@ class Player(Object.Object):
                     self.is_move_sound_play = True
 
                 if keys[pygame.K_RIGHT]:
-                    self.x += self.move_speed * self.delta_time
+                    if self.x <= 720:
+                        self.x += self.move_speed * self.delta_time
                     if self.direction:
                         self.direction = False
                         self.attack_range *= -1
                 if keys[pygame.K_LEFT]:
-                    self.x -= self.move_speed * self.delta_time
+                    if self.x >= 0:
+                        self.x -= self.move_speed * self.delta_time
                     if not self.direction:
                         self.direction = True
                         self.attack_range *= -1
@@ -415,7 +417,7 @@ class Player(Object.Object):
 
                     if self.punch_combo > self.punch_max_combo:
                         self.punch_combo = 0
-                        self.attack_delay = 0
+                        self.punch_delay = 0
                         self.is_attack_able = False
 
 
@@ -423,13 +425,13 @@ class Player(Object.Object):
                     self.energy -= self.punch_energy
 
     def punch_end(self):
-        if self.punch_combo <= self.punch_max_combo:
+        if self.punch_delay >= self.punch_max_delay and self.punch_combo <= self.punch_max_combo:
             self.punch_combo = 0
 
             self.is_move_able = False
             self.is_attack_able = False
             self.is_attacking = True
-            self.attack_delay = 0
+            self.punch_delay = 0
 
     def kick(self):
         # if player doesn't death
@@ -455,7 +457,6 @@ class Player(Object.Object):
                 self.is_move_able = False
                 self.is_attack_able = False
                 self.is_attacking = True
-                self.attack_delay = 0
 
     def hit(self, damage):
         if not self.is_player_death and not self.is_invincibility:
@@ -501,9 +502,9 @@ class Player(Object.Object):
 
             # invincibility time
             if self.is_invincibility_able:
-                if not self.direction:
+                if not self.direction and self.x <= 720:
                     self.x += self.dash_point
-                else:
+                elif self.direction and self.x >= 0:
                     self.x -= self.dash_point
                 self.dash_range += self.dash_point
 

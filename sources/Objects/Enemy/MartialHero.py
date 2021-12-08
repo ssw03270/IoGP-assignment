@@ -66,9 +66,9 @@ class MartialHero(Object.Object):
 
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 3000
+        self.attack_max_delay = 1000
         self.is_attack_able = False
-        self.damage = 3
+        self.damage = 2
 
         self.attack_passe_two_count = 0
         self.attack_passe_two_max_count = 3
@@ -225,14 +225,14 @@ class MartialHero(Object.Object):
                     if self.attack_passe_two_count < self.attack_passe_two_max_count:
                         self.attack_max_delay = self.attack_passe_two_max_delay
                     elif self.attack_passe_two_count >= self.attack_passe_two_max_count:
-                        self.attack_max_delay = 3000
+                        self.attack_max_delay = 1000
                     self.state_index = self.attack_passe_two_count % 2 + 2
                     self.attack_passe_two_count += 1
                 elif is_far:
                     if self.attack_passe_two_count < self.attack_passe_two_max_count / 2:
                         self.attack_max_delay = self.attack_passe_two_max_delay
                     elif self.attack_passe_two_count >= self.attack_passe_two_max_count / 2:
-                        self.attack_max_delay = 3000
+                        self.attack_max_delay = 1000
                     self.state_index = 4
                     self.ability.append(Star.Star(self.x, self.y, self.direction, self.player, self))
                     self.attack_passe_two_count += 1

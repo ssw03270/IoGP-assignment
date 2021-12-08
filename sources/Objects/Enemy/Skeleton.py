@@ -48,7 +48,7 @@ class Skeleton(Object.Object):
 
         # flower enemy attack
         self.attack_delay = 0
-        self.attack_max_delay = 2500
+        self.attack_max_delay = 1000
         self.is_attack_able = True
         self.damage = 2
 
