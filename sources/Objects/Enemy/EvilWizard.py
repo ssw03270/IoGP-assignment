@@ -12,7 +12,7 @@ class EvilWizard(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
-        self.max_health = 20
+        self.max_health = 30
         self.health = self.max_health
         self.name = "Evil Wizard"
         self.ability = []

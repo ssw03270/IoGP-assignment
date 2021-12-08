@@ -12,7 +12,7 @@ class King(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
-        self.max_health = 10
+        self.max_health = 40
         self.health = self.max_health
         self.name = "King"
         self.ability = []
@@ -69,9 +69,9 @@ class King(Object.Object):
         self.damage = 3
 
         self.ability_delay = 0
-        self.ability_max_delay = 3000
+        self.ability_max_delay = 5000
         self.ability_real_max_delay = self.ability_max_delay
-        self.ability_down_by_health = 2000 * self.health / self.max_health
+        self.ability_down_by_health = 2500 * self.health / self.max_health
 
         # flower enemy hit
         self.hit_delay = 0
@@ -118,7 +118,7 @@ class King(Object.Object):
             sword.update()
 
         self.ability_delay += self.delta_time
-        if self.ability_delay > self.ability_max_delay:
+        if self.ability_delay > self.ability_max_delay and self.health < self.max_health / 2:
             self.ability.append(Sword.Sword(self.x, self.y, (0, 0), self.player, self))
             self.ability_delay = 0
 

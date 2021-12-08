@@ -12,7 +12,7 @@ class MartialHero(Object.Object):
         self.delta_time = 0
         self.real_x = self.x
         self.direction = False
-        self.max_health = 10
+        self.max_health = 20
         self.health = self.max_health
         self.name = "Martial Hero"
         self.ability = []
