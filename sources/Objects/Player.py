@@ -64,20 +64,20 @@ class Player(Object.Object):
 
         self.attack_combo = 0
         self.attack_max_combo = 2
-        self.attack_delay = 0
+        self.attack_delay = 450
         self.attack_max_delay = 450
         self.attack_normal_max_delay = 450
         self.attack_combo_max_delay = 2000
 
         self.punch_combo = 0
         self.punch_max_combo = 1000
-        self.punch_delay = 2000
-        self.punch_max_delay = 2000
+        self.punch_delay = 10000
+        self.punch_max_delay = 10000
         self.punch_energy = 0.2
 
         self.kick_combo = 0
         self.kick_max_combo = 1
-        self.kick_delay = 0
+        self.kick_delay = 450
         self.kick_max_delay = 450
         self.kick_normal_max_delay = 450
         self.kick_combo_max_delay = 2000

@@ -313,6 +313,41 @@ def draw_player_ui(player):
     pygame.draw.rect(screen, blue, [50, 500, 125 * (player_energy / player_max_energy) - 5, 20])
     pygame.draw.rect(screen, blue, [46, 502, 125 * (player_energy / player_max_energy), 16])
 
+    spr_attack = pygame.image.load("../sprites/ui/Attack.png").convert_alpha()
+    spr_punch = pygame.image.load("../sprites/ui/Punch.png").convert_alpha()
+    spr_kick = pygame.image.load("../sprites/ui/Kick.png").convert_alpha()
+
+    screen.blit(spr_attack, (550, 475))
+    screen.blit(spr_punch, (600, 475))
+    screen.blit(spr_kick, (650, 475))
+
+    attack_height = player.attack_delay / player.attack_max_delay * 40
+    punch_height = player.punch_delay / player.punch_max_delay * 40
+    kick_height = player.kick_delay / player.kick_max_delay * 40
+
+    if attack_height > 40:
+        attack_height = 40
+    if punch_height > 40:
+        punch_height = 40
+    if kick_height > 40:
+        kick_height = 40
+
+    attack_transparent = pygame.Surface((40, 40 - attack_height))  # the size of your rect
+    punch_transparent = pygame.Surface((40, 40 - punch_height))  # the size of your rect
+    kick_transparent = pygame.Surface((40, 40 - kick_height))  # the size of your rect
+
+    attack_transparent.set_alpha(200)  # alpha level
+    punch_transparent.set_alpha(200)  # alpha level
+    kick_transparent.set_alpha(200)  # alpha level
+
+    attack_transparent.fill(gray)
+    punch_transparent.fill(gray)
+    kick_transparent.fill(gray)
+
+    screen.blit(attack_transparent, (550, 475))
+    screen.blit(punch_transparent, (600, 475))
+    screen.blit(kick_transparent, (650, 475))
+
 def main():
     # object
     player_x = 100
