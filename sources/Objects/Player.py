@@ -15,7 +15,7 @@ class Player(Object.Object):
 
         self.max_health = 20
         self.health = self.max_health
-        self.max_energy = 20
+        self.max_energy = 200
         self.energy = self.max_energy
         self.attack_damage = 1
 
@@ -317,14 +317,16 @@ class Player(Object.Object):
                 if self.jump_point < math.pi / 2:
                     if not self.state_index == 2 and not self.is_attacking_state and not self.state_index == 6:
                         self.state_index = 8
-                else:
+                elif self.jump_point > math.pi / 2:
                     if not self.state_index == 2 and not self.is_attacking_state and not self.state_index == 6:
                         self.state_index = 9
 
-            if self.jump_point > math.pi:
+            if self.jump_point >= math.pi:
+                print(self.y)
                 self.is_jump_able = True
                 self.jump_point = 0
                 self.y = self.jump_start_point
+                print(self.jump_start_point)
                 if self.state_index == 8 or self.state_index == 9:
                     self.state_index = 0
 

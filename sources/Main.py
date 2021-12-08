@@ -457,7 +457,9 @@ def main():
                 # if event.key == pygame.K_x:
                 #     player.guard_on()
                 if event.key == pygame.K_r and player.is_player_death:
-                    player = Player.Player(300, 355)
+                    player_x = 100
+                    player_y = 390
+                    player = Player.Player(player_x, player_y)
 
                     died = UiDied.UiDied(360, 270, player)
 
