@@ -262,6 +262,7 @@ class MartialHero(Object.Object):
                 self.move_delay = 0
                 self.is_move_able = False
                 self.is_attack_able = False
+                self.attack_delay = 0
 
             if self.health <= 0:
                 self.state_index = 5
@@ -288,7 +289,7 @@ class MartialHero(Object.Object):
             if min(self.player.x, self.player.x + self.player.attack_range) < self.x and self.x < max(
                     self.player.x, self.player.x + self.player.attack_range):
 
-                if self.player.state_index == 3:
+                if self.player.is_attacking_state:
                     if math.floor(self.player.spr_index) > (len(self.player.spr_list[self.player.state_index]) - 1) / 2:
                         self.hit(self.player.attack_damage)
 

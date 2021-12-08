@@ -16,6 +16,8 @@ class Button(Object.Object):
         # ui image
         self.spr_button = pygame.image.load("../sprites/ui/Button.png").convert_alpha()    # 0
 
+        self.is_click_able = True
+
     def draw_image(self):
         sprite = self.spr_button.subsurface(0, 0, self.spr_width, self.spr_height)
         sprite = pygame.transform.scale(
@@ -24,9 +26,14 @@ class Button(Object.Object):
         return sprite
 
     def check_click(self, x, y):
-        click_x = x
-        click_y = y
+        if self.is_click_able:
+            click_x = x
+            click_y = y
 
-        if self.x - self.spr_width / 2 * self.spr_size < click_x and click_x < self.x + self.spr_width / 2 * self.spr_size:
-            if self.y - self.spr_height / 2 * self.spr_size < click_y and click_y < self.y + self.spr_height / 2 * self.spr_size:
-                return self.title
+            if self.x - self.spr_width / 2 * self.spr_size < click_x and click_x < self.x + self.spr_width / 2 * self.spr_size:
+                if self.y - self.spr_height / 2 * self.spr_size < click_y and click_y < self.y + self.spr_height / 2 * self.spr_size:
+                    self.is_click_able = False
+
+                    return self.title
+        else:
+            return ""

@@ -24,11 +24,15 @@ class Player(Object.Object):
         self.spr_move = pygame.image.load("../sprites/HeroKnight/Run.png").convert_alpha()          # 1
         self.spr_dash = pygame.image.load("../sprites/HeroKnight/Dash.png").convert_alpha()         # 2
         self.spr_attack = pygame.image.load("../sprites/HeroKnight/Attack.png").convert_alpha()     # 3
-        self.spr_hit = pygame.image.load("../sprites/HeroKnight/Hit.png").convert_alpha()           # 4
-        self.spr_death = pygame.image.load("../sprites/HeroKnight/Death.png").convert_alpha()       # 5
-        self.spr_jump = pygame.image.load("../sprites/HeroKnight/Jump.png").convert_alpha()         # 6
-        self.spr_fall = pygame.image.load("../sprites/HeroKnight/Fall.png").convert_alpha()         # 7
-        self.spr_guard = pygame.image.load("../sprites/HeroKnight/Guard.png").convert_alpha()         # 8
+        self.spr_attack = pygame.image.load("../sprites/HeroKnight/Attack.png").convert_alpha()     # 4
+        self.spr_attack = pygame.image.load("../sprites/HeroKnight/Attack.png").convert_alpha()     # 5
+        self.spr_hit = pygame.image.load("../sprites/HeroKnight/Hit.png").convert_alpha()           # 6
+        self.spr_death = pygame.image.load("../sprites/HeroKnight/Death.png").convert_alpha()       # 7
+        self.spr_jump = pygame.image.load("../sprites/HeroKnight/Jump.png").convert_alpha()         # 8
+        self.spr_fall = pygame.image.load("../sprites/HeroKnight/Fall.png").convert_alpha()         # 9
+        self.spr_guard = pygame.image.load("../sprites/HeroKnight/Guard.png").convert_alpha()         # 10
+
+        self.spr_player_sprite_sheet = pygame.image.load("../sprites/player/PlayerSpriteSheet.png").convert_alpha() # 8
 
         # player sound
         self.sound_walk = pygame.mixer.Sound("../sounds/player/walk.mp3")
@@ -57,9 +61,21 @@ class Player(Object.Object):
 
         # player attack
         self.attack_range = 100
+
         self.attack_combo = 0
+        self.attack_max_combo = 2
         self.attack_delay = 0
-        self.attack_max_delay = 500
+        self.attack_max_delay = 450
+        self.attack_normal_max_delay = 450
+        self.attack_combo_max_delay = 2000
+
+        self.punch_combo = 0
+        self.punch_max_combo = 2
+        self.punch_delay = 0
+        self.punch_max_delay = 450
+        self.punch_normal_max_delay = 450
+        self.punch_combo_max_delay = 2000
+
         self.is_attack_able = True
         self.is_attacking = False
         self.attack_energy = 1
@@ -102,20 +118,23 @@ class Player(Object.Object):
         self.state_index = 0
 
         # sprite information
-        self.spr_width = 140
-        self.spr_height = 140
+        self.spr_width = 50
+        self.spr_height = 37
         self.spr_speed = 80
         self.spr_index = 0
-        self.spr_size = 2
+        self.spr_size = 3
         self.spr_list = []
         self.spr_x = self.x + self.spr_width / 2 * self.spr_size
         self.spr_y = self.x + self.spr_height / 2 * self.spr_size
 
         self.set_sprite()
 
+        self.is_attacking_state = False
+
     def update(self):
         # attack delay counting
         self.attack_delay += self.delta_time
+        self.punch_delay += self.delta_time
         # hit delay counting
         if not self.is_hit_able:
             self.hit_delay += self.delta_time
@@ -143,59 +162,96 @@ class Player(Object.Object):
         for guard_effect in self.guard_effect:
             guard_effect.update()
 
+        self.is_attacking_state = (3 <= self.state_index and self.state_index <= 5) or (11 <= self.state_index and self.state_index <= 13)
     def set_sprite(self):
         lis = []
-        # state is idle
-        for i in range(0, 11):
-            lis.append(self.spr_idle.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
-        self.spr_list.append(lis[:])
-        lis.clear()
 
-        # state is move
-        for i in range(0, 8):
-            lis.append(self.spr_move.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
-        self.spr_list.append(lis[:])
-        lis.clear()
-
-        # state is dash
+        # state is idle 0
         for i in range(0, 4):
-            lis.append(self.spr_dash.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 0 * self.spr_height, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
-        # state is attack
+        # state is move 1
         for i in range(0, 6):
-            lis.append(self.spr_attack.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 2 * self.spr_height, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
-        # state is hit
+        # state is dash 2
+        for i in range(0, 2):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 6 * self.spr_height, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is attack1 3
+        for i in range(0, 5):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 11 * self.spr_height, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is attack2 4
+        for i in range(0, 6):
+            lis.append(
+                self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 12 * self.spr_height, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is attack3 5
+        for i in range(0, 6):
+            lis.append(
+                self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 13 * self.spr_height, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is hit 6
+        for i in range(0, 3):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 14 * self.spr_height, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is death 7
+        for i in range(0, 7):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 15 * self.spr_height, self.spr_width, self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is jump 8
         for i in range(0, 4):
-            lis.append(self.spr_hit.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 3 * self.spr_height, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
-        # state is death
-        for i in range(0, 9):
-            lis.append(self.spr_death.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+        # state is fall 9
+        for i in range(0, 2):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 5 * self.spr_height, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
-        # state is jump
+        # state is guard 10
         for i in range(0, 4):
-            lis.append(self.spr_jump.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 0 * self.spr_height, self.spr_width, self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
-        # state is fall
+        # state is punch 11
         for i in range(0, 4):
-            lis.append(self.spr_fall.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 29 * self.spr_height, self.spr_width,
+                                                               self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
-        # state is guard
-        for i in range(0, 4):
-            lis.append(self.spr_guard.subsurface(i * self.spr_width, 0, self.spr_width, self.spr_height))
+        # state is punch 12
+        for i in range(4, 8):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 29 * self.spr_height, self.spr_width,
+                                                               self.spr_height))
+        self.spr_list.append(lis[:])
+        lis.clear()
+
+        # state is punch 13
+        for i in range(8, 12):
+            lis.append(self.spr_player_sprite_sheet.subsurface(i * self.spr_width, 29 * self.spr_height, self.spr_width,
+                                                               self.spr_height))
         self.spr_list.append(lis[:])
         lis.clear()
 
@@ -205,12 +261,12 @@ class Player(Object.Object):
             # if current index over than max index
             if math.floor(self.spr_index) > len(self.spr_list[self.state_index]) - 1:
                 # if player attack
-                if self.state_index == 3:
+                if self.is_attacking_state:
                     self.state_index = 0
                     self.is_move_able = True
                     self.is_attacking = False
                 # if player hit
-                elif self.state_index == 4:
+                elif self.state_index == 6:
                     self.state_index = 0
                     self.is_move_able = True
                 elif self.state_index == 0:
@@ -227,7 +283,7 @@ class Player(Object.Object):
 
         # if player death
         else:
-            self.state_index = 5
+            self.state_index = 7
             # animation not finished
             if math.floor(self.spr_index) <= len(self.spr_list[self.state_index]) - 1:
                 self.spr_index += 1 / self.spr_speed * self.delta_time
@@ -251,17 +307,17 @@ class Player(Object.Object):
                 self.jump_point += math.pi / self.delta_time * 2
 
                 if self.jump_point < math.pi / 2:
-                    if not self.state_index == 2 and not self.state_index == 3 and not self.state_index == 4:
-                        self.state_index = 6
+                    if not self.state_index == 2 and not self.is_attacking_state and not self.state_index == 6:
+                        self.state_index = 8
                 else:
-                    if not self.state_index == 2 and not self.state_index == 3 and not self.state_index == 4:
-                        self.state_index = 7
+                    if not self.state_index == 2 and not self.is_attacking_state and not self.state_index == 6:
+                        self.state_index = 9
 
             if self.jump_point > math.pi:
                 self.is_jump_able = True
                 self.jump_point = 0
                 self.y = self.jump_start_point
-                if self.state_index == 6 or self.state_index == 7:
+                if self.state_index == 8 or self.state_index == 9:
                     self.state_index = 0
 
             # player move
@@ -269,7 +325,7 @@ class Player(Object.Object):
 
             # if player move
             if (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and self.is_move_able and not self.is_invincibility_able and not self.is_guard_on:
-                if not self.state_index == 6 and not self.state_index == 7:
+                if not self.state_index == 8 and not self.state_index == 9:
                     self.state_index = 1
 
                 # play foot step sound
@@ -315,7 +371,39 @@ class Player(Object.Object):
             # player attack
             if self.is_attack_able and not self.is_guard_on and self.energy >= self.attack_energy:
                 self.spr_index = 0
-                self.state_index = 3
+                self.state_index = 3 + self.attack_combo
+                self.attack_combo += 1
+                self.attack_max_delay = self.attack_normal_max_delay
+                if self.attack_combo > self.attack_max_combo:
+                    self.attack_combo = 0
+                    self.attack_max_delay = self.attack_combo_max_delay
+
+                pygame.mixer.Sound.play(self.sound_attack1)
+                self.energy -= self.attack_energy
+
+                self.is_move_able = False
+                self.is_attack_able = False
+                self.is_attacking = True
+                self.attack_delay = 0
+
+    def punch(self):
+        # if player doesn't death
+        if not self.is_player_death:
+
+            if self.punch_delay >= self.punch_max_delay:
+                self.punch_delay = 0
+                self.is_attack_able = True
+
+            # player attack
+            if self.is_attack_able and not self.is_guard_on and self.energy >= self.attack_energy:
+                self.spr_index = 0
+                self.state_index = 11 + self.punch_combo
+                self.punch_combo += 1
+                self.punch_max_delay = self.punch_normal_max_delay
+                if self.punch_combo > self.punch_max_combo:
+                    self.punch_combo = 0
+                    self.punch_max_delay = self.punch_combo_max_delay
+
                 pygame.mixer.Sound.play(self.sound_attack1)
                 self.energy -= self.attack_energy
 
@@ -332,7 +420,7 @@ class Player(Object.Object):
                 self.is_hit_able = True
 
             if self.is_hit_able and not self.is_guard_on:
-                self.state_index = 4
+                self.state_index = 6
                 self.spr_index = 0
                 self.health -= damage
                 self.is_hit_able = False
@@ -344,7 +432,7 @@ class Player(Object.Object):
                     self.guard_effect.append(GuardEffect.GuardEffect(self.x, self.y, self))
 
             if self.health <= 0:
-                self.state_index = 5
+                self.state_index = 7
                 self.spr_index = 0
                 self.is_player_death = True
 
@@ -362,7 +450,7 @@ class Player(Object.Object):
                 self.is_invincibility = True
                 self.is_invincibility_able = True
                 self.dash_range = 0
-                if not self.state_index == 3:
+                if not self.is_attacking_state:
                     self.state_index = 2
                     self.energy -= self.dash_energy
 
@@ -390,7 +478,7 @@ class Player(Object.Object):
 
     def guard_on(self):
         if not self.is_player_death:
-            self.state_index = 8
+            self.state_index = 10
             self.spr_index = 0
             self.is_guard_on = True
 

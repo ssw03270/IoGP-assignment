@@ -316,7 +316,7 @@ def draw_player_ui(player):
 def main():
     # object
     player_x = 100
-    player_y = 415
+    player_y = 390
     player = Player.Player(player_x, player_y)
 
     died = UiDied.UiDied(360, 270, player)
@@ -324,7 +324,6 @@ def main():
     # level
     levels = [[],
               [],
-              [King.King(800, 340, player)],
               [MedievalWarrior.MedievalWarrior(800, 400, player)],
               [],
               [MartialHero.MartialHero(800, 400, player)],
@@ -396,34 +395,47 @@ def main():
                 row_index = event.pos[1]
                 for button in button_list:
                     value = button.check_click(column_index, row_index)
-                    if value == "Start":
+                    if value == "Start" and level_index == 0:
                         level_index = 1
                         player.x = player_x
                         player.y = player_y
-                    elif value == "Exit":
+
+                    elif value == "Exit" and level_index == 0:
                         sys.exit()
-                    elif value == "Paper":
+
+                    elif value == "Paper" and level_index % 2 == 1:
                         level_index += level_index % 2
                         player.x = player_x
                         player.y = player_y
 
             if event.type == pygame.KEYDOWN and not level_index == 0 and not level_index % 2 == 1:
-                if event.key == pygame.K_LCTRL:
+                if event.key == pygame.K_z:
                     player.attack()
+                if event.key == pygame.K_x:
+                    player.punch()
                 if event.key == pygame.K_SPACE:
                     player.jump()
-                if event.key == pygame.K_LALT:
-                    player.guard_on()
+                # if event.key == pygame.K_x:
+                #     player.guard_on()
                 if event.key == pygame.K_r and player.is_player_death:
                     player = Player.Player(300, 355)
 
                     died = UiDied.UiDied(360, 270, player)
 
                     # level
-                    levels = levels
+                    levels = [[],
+                              [],
+                              [MedievalWarrior.MedievalWarrior(800, 400, player)],
+                              [],
+                              [MartialHero.MartialHero(800, 400, player)],
+                              [],
+                              [EvilWizard.EvilWizard(800, 375, player)],
+                              [],
+                              [King.King(800, 340, player)]]
+
                     level_index = 0
             if event.type == pygame.KEYUP and not level_index == 0 and not level_index % 2 == 1:
-                if event.key == pygame.K_LALT:
+                if event.key == pygame.K_x:
                     player.guard_off()
         # draw object
         for obj in levels[level_index]:
