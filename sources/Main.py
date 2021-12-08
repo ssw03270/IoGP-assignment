@@ -327,10 +327,16 @@ def draw_player_ui(player):
 
     if attack_height > 40:
         attack_height = 40
+        if player.attack_delay > player.attack_max_delay and player.attack_delay < player.attack_max_delay + player.delta_time * 2:
+            pygame.draw.rect(screen, white, [550, 475, 40, 40])
     if punch_height > 40:
         punch_height = 40
+        if player.punch_delay > player.punch_max_delay and player.punch_delay < player.punch_max_delay + player.delta_time * 2:
+            pygame.draw.rect(screen, white, [600, 475, 40, 40])
     if kick_height > 40:
         kick_height = 40
+        if player.kick_delay > player.kick_max_delay and player.kick_delay < player.kick_max_delay + player.delta_time * 2:
+            pygame.draw.rect(screen, white, [650, 475, 40, 40])
 
     attack_transparent = pygame.Surface((40, 40 - attack_height))  # the size of your rect
     punch_transparent = pygame.Surface((40, 40 - punch_height))  # the size of your rect
