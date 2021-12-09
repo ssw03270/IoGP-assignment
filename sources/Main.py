@@ -23,6 +23,7 @@ blue = (0, 0, 255)
 green = (0, 255, 0)
 red = (200, 0, 0)
 gray = (59, 59, 59)
+purple = (120, 81, 169)
 
 # pygame display
 window_size = [720, 540]
@@ -289,8 +290,13 @@ def draw_enemy_health(enemy):
     enemy_max_health = enemy.max_health
     enemy_health = enemy.health
 
+    enemy_max_explosive = enemy.max_explosive
+    enemy_explosive = enemy.explosive
+
     font = pygame.font.SysFont(None, 30)
     title = font.render(enemy.name, True, white)
+    if enemy.is_explosive:
+        title = font.render(enemy.name, True, red)
     title_rect = title.get_rect()
     title_rect.centerx = 360
     title_rect.y = 25
@@ -303,6 +309,14 @@ def draw_enemy_health(enemy):
 
     pygame.draw.rect(screen, red, [150, 50, 425 * (enemy_health / enemy_max_health) - 5, 20])
     pygame.draw.rect(screen, red, [148, 52, 425 * (enemy_health / enemy_max_health), 16])
+
+    pygame.draw.rect(screen, black, [148, 48 + 25, 423, 24 - 15])
+    pygame.draw.rect(screen, black, [146, 50 + 25, 428, 20 - 15])
+
+    pygame.draw.rect(screen, gray, [145, 51 + 25, 426, 18 - 15])
+
+    pygame.draw.rect(screen, purple, [150, 50 + 25, 425 * (enemy_explosive / enemy_max_explosive) - 5, 20 - 15])
+    pygame.draw.rect(screen, purple, [148, 52 + 25, 425 * (enemy_explosive / enemy_max_explosive), 16 - 15])
 
 def draw_player_ui(player):
     player_max_health = player.max_health

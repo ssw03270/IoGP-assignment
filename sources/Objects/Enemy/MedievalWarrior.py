@@ -13,6 +13,11 @@ class MedievalWarrior(Object.Object):
         self.direction = False
         self.max_health = 15
         self.health = self.max_health
+        self.max_explosive = 5
+        self.explosive = self.max_explosive
+        self.explosive_max_delay = 5000
+        self.explosive_delay = 0
+        self.is_explosive = False
         self.name = "Medieval Warrior"
         self.ability = []
 
@@ -93,6 +98,21 @@ class MedievalWarrior(Object.Object):
         if not self.is_enemy_die:
             self.detected_player()
             self.move()
+
+        if self.explosive <= 0:
+            self.is_explosive = True
+
+        if self.is_explosive:
+            self.explosive_delay += self.delta_time
+
+            if self.explosive_delay >= self.explosive_max_delay:
+                self.explosive_delay = 0
+                self.is_explosive = False
+                self.explosive = self.max_explosive
+        else:
+            self.explosive += self.delta_time / 5000
+            if self.explosive >= self.max_explosive:
+                self.explosive = self.max_explosive
 
     def set_sprite(self):
         lis = []
@@ -210,16 +230,18 @@ class MedievalWarrior(Object.Object):
                 self.is_move_able = True
 
             if self.is_hit_able:
-                self.state_index = 6
-                self.spr_index = 0
                 self.health -= damage
-                print(damage)
                 self.is_hit_able = False
                 self.sound_hit.play()
                 self.move_delay = 0
                 self.is_move_able = False
                 self.is_attack_able = False
-                self.attack_delay = 0
+                self.explosive -= 1
+
+                if not self.is_explosive:
+                    self.attack_delay = 0
+                    self.state_index = 6
+                    self.spr_index = 0
 
             if self.health <= 0:
                 self.state_index = 5
