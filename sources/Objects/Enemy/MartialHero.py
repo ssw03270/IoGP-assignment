@@ -186,7 +186,7 @@ class MartialHero(Object.Object):
         # if player live, playing animation
         if not self.is_enemy_die:
             if self.state_index >= 2 and self.state_index <= 4:
-                if math.floor(self.spr_index) > (len(self.spr_list[self.state_index]) - 1) / 2:
+                if math.floor(self.spr_index) > (len(self.spr_list[self.state_index]) - 1) / 3 and math.floor(self.spr_index) <= (len(self.spr_list[self.state_index]) - 1) / 3 * 2:
                     if self.state_index <= 3:
                         self.player.hit(self.damage)
             # if current index over than max index
@@ -286,6 +286,7 @@ class MartialHero(Object.Object):
                     self.attack_delay = 0
                     self.state_index = 6
                     self.spr_index = 0
+                    self.sound_attack.stop()
 
             if self.health <= 0:
                 self.state_index = 5

@@ -19,6 +19,9 @@ class Player(Object.Object):
         self.energy = self.max_energy
         self.attack_damage = 1
 
+        self.play_time = 0
+        self.game_end = False
+
         # player image
         self.spr_idle = pygame.image.load("../sprites/HeroKnight/Idle.png").convert_alpha()         # 0
         self.spr_move = pygame.image.load("../sprites/HeroKnight/Run.png").convert_alpha()          # 1
@@ -175,6 +178,10 @@ class Player(Object.Object):
             guard_effect.update()
 
         self.is_attacking_state = (3 <= self.state_index and self.state_index <= 5) or (11 == self.state_index) or (12 <= self.state_index and self.state_index <= 13)
+
+        if not self.game_end:
+            self.play_time += self.delta_time
+
     def set_sprite(self):
         lis = []
 

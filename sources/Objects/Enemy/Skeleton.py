@@ -197,6 +197,7 @@ class Skeleton(Object.Object):
                 self.state_index = 3
                 self.spr_index = 0
                 self.is_enemy_die = True
+                self.sound_walk.stop()
                 self.sound_death.play()
 
     def detected_player(self):

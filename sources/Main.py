@@ -67,7 +67,7 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
         x = pos[0]  # Reset the x.
         y += word_height  # Start on new row.
 
-def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
+def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int, player = Player):
     if level == 0:
         spr_title = pygame.image.load("../sprites/ui/Title.png").convert_alpha()
         screen.blit(spr_title, (360 - 257, 100))
@@ -279,6 +279,27 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
             new_content += ''.join(content) + "\n"
 
         blit_text(screen, new_content, paper.position(), font)
+
+        text = font.render("The End", False, black)
+        screen.blit(text, (580, 400))
+
+        text = font.render("2020105706 - 서승원", False, black)
+        screen.blit(text, (475, 380))
+
+        seconds = (player.play_time / 1000) % 60
+        minutes = int(player.play_time / (1000 * 60)) % 60
+        hours = int(player.play_time / (1000 * 60 * 60)) % 24
+
+        font = pygame.font.SysFont("휴먼편지체", 40)
+        text = font.render(str(hours) + ":" + str(minutes) + ":" + str(seconds), False, black)
+        text_rect = text.get_rect(center=(360, 330))
+        screen.blit(text, text_rect)
+
+        font = pygame.font.SysFont("휴먼편지체", 20)
+        text = font.render("play time", False, black)
+        text_rect = text.get_rect(center=(360, 300))
+        screen.blit(text, text_rect)
+
 def draw_sprite(sprite, tileset, start_x, start_y, not_x1 = -1, not_y1 = -1, not_x2 = -1, not_y2 = -1):
     for x in range(len(sprite)):
         for y in range(len(sprite[x])):
@@ -398,7 +419,8 @@ def main():
               [],
               [EvilWizard.EvilWizard(800, 375, player)],
               [],
-              [King.King(800, 340, player)]]
+              [King.King(800, 340, player)],
+              []]
 
     level_index = 0
     max_level_index = len(levels)
@@ -452,7 +474,7 @@ def main():
         # set screen white for update display
         background = pygame.image.load("../sprites/Castle/background.png")
         screen.blit(background, (0, 0))
-        draw_level(tileset, level_index, delta_time)
+        draw_level(tileset, level_index, delta_time, player)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -471,7 +493,7 @@ def main():
                     elif value == "Exit" and level_index == 0:
                         sys.exit()
 
-                    elif value == "Paper" and level_index % 2 == 1:
+                    elif value == "Paper" and level_index % 2 == 1 and not level_index == max_level_index - 1:
                         level_index += level_index % 2
                         player.x = player_x
                         player.y = player_y
