@@ -94,8 +94,9 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
     elif level == 1:
         content = " 아주 먼 옛날, 배고픈 기사 하나가 길을 가고 있었다. 명예나 권력을 좋아하던 보통의 기사들과는 달리, 그는 오직 먹는 것만 좋아할 뿐이었다.\n\n" \
                   " 어느날 문득, 그는 왕의 점심은 얼마나 맛있을지에 대한 생각을 했다. 실행력이 좋았던 기사는 그 길로 곧장, 왕의 성으로 쳐들어가고자 했다. \n\n" \
-                  " 하지만 성문에는 문지기가 있었다. 아무래도 기사는 그를 뚫고 가야 할 듯 했다. \n\n\n\n" \
-                  " (방향키 : 이동, Shift : 대시, Alt : 방어,\n Ctrl : 공격, Space : 점프)"
+                  " 하지만 성문에는 문지기가 있었다. 아무래도 기사는 그를 뚫고 가야 할 듯 했다. \n\n\n" \
+                  " 방향키 : 이동, Shift : 대시, Space : 점프" \
+                  " X, Z : 짧게 눌러 공격, Y : 길게 눌러 공격"
         paper = Paper.Paper(360, 270, "Paper", content)
         button_list.append(paper)
         draw(paper)
@@ -132,8 +133,7 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
         content = " 고작 문지기로는 온갖 산해진미를 먹으며 근육을 단련한 기사를 막을 수 없었다. 하지만 약간의 상처를 입는 건 어쩔 수 없었다. \n\n" \
                   " 다행이 문지기의 뒷주머니에는 먹다 만 빵조각이 있었고, 기사는 참지 못하고 먹어버리고 말았다. \n\n" \
                   " 양은 적었지만 기사가 회복하기에는 충분한 양이었다. 만반의 준비를 갖춘 기사는 이내 성 안으로 발걸음을 옮겼다 \n\n" \
-                  " 넓은 성안, 그곳에는 사무라이 하나가 뜬금없이 복도에 서있었다. 개발자의 예산 부족인지 뭔지는 모르겠지만 사무라이는 먼 나라에서 온 손님인 듯 했다. \n\n" \
-                  " 기사의 목표는 왕의 점심. 기사는 곧장 사무라이에게 달려들었다."
+                  " 넓은 성안, 그곳에는 사무라이 하나가 뜬금없이 복도에 서있었다. 개발자의 예산 부족인지 뭔지는 모르겠지만 사무라이는 먼 나라에서 온 손님인 듯 했다. \n\n"
         paper = Paper.Paper(360, 270, "Paper", content)
         button_list.append(paper)
         draw(paper)
@@ -224,8 +224,7 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
     elif level == 7:
         content = " 마법사가 소환하는 해골 탓에 꽤나 성가셨지만 기사는 어찌어찌 쳐치하는데 성공했다. 역시나 기사는 배고픔을 해결하기 위해 마법사의 옷을 뒤적였다.\n\n" \
                   " 그러나 마법사가 가진 것이라고는 정체불명의 핏덩어리 뿐이었다. 아무리 기사가 대식가라고는 하지만 이건 무리였다. \n\n" \
-                  " 이후 기사는 다시 앞으로 나아갔다. 곧, 그는 쌍둥이를 만날 수 있었다. 그녀들은 똑 닮았으며, 날카라운 창을 들고 있었다. \n\n" \
-                  " 그리고 이번에도 기사는 왕의 점심을 먹기 위해 앞으로 나아갔다."
+                  " 이후 기사는 다시 앞으로 나아갔다. 곧, 그는 왕을 만날 수 있었다. 실력에 자신이 있는지 다른 수하들 없이 단신으로 등장했다. \n\n"
         paper = Paper.Paper(360, 270, "Paper", content)
         button_list.append(paper)
         draw(paper)
@@ -265,6 +264,20 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int):
             draw_sprite(tileset.draw_env_object_far(14, 18, 15, 18), tileset, i * tileset.real_size, 0)
             draw_sprite(tileset.draw_env_object_far(14, 16, 15, 16), tileset, i * tileset.real_size, 32)
 
+    elif level == 9:
+        content = " 마침내 왕을 쓰러트린 기사는 그의 식탁으로 향했다.\n\n" \
+                  " 상다리가 휘어진 식탁과 산해진미를 기대하며 식당의 문을 열었다. \n\n" \
+                  " 그런 기사의 바램과는 달리, 왕의 식탁 위에는 풀조각만 가득했다. 그렇다, 왕은 비건이었다고 한다. \n\n"
+        paper = Paper.Paper(360, 270, "Paper", content)
+        button_list.append(paper)
+        draw(paper)
+
+        font = pygame.font.SysFont("휴먼편지체", 20)
+        new_content = ""
+        for content in paper.contents:
+            new_content += ''.join(content) + "\n"
+
+        blit_text(screen, new_content, paper.position(), font)
 def draw_sprite(sprite, tileset, start_x, start_y, not_x1 = -1, not_y1 = -1, not_x2 = -1, not_y2 = -1):
     for x in range(len(sprite)):
         for y in range(len(sprite[x])):

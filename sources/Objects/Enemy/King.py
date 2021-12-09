@@ -118,7 +118,7 @@ class King(Object.Object):
             sword.update()
 
         self.ability_delay += self.delta_time
-        if self.ability_delay > self.ability_max_delay and self.health < self.max_health / 2:
+        if self.ability_delay > self.ability_max_delay and self.health < self.max_health / 2 and not self.is_enemy_die:
             self.ability.append(Sword.Sword(self.x, self.y, (0, 0), self.player, self))
             self.ability_delay = 0
 
