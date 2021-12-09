@@ -39,12 +39,16 @@ class Player(Object.Object):
         self.sound_attack1 = pygame.mixer.Sound("../sounds/player/attack1.mp3")
         self.sound_attack2 = pygame.mixer.Sound("../sounds/player/attack2.mp3")
         self.sound_attack3 = pygame.mixer.Sound("../sounds/player/attack3.mp3")
+        self.sound_punch = pygame.mixer.Sound("../sounds/player/punch.mp3")
+        self.sound_kick = pygame.mixer.Sound("../sounds/player/kick.mp3")
 
         # set sound volume
         self.sound_walk.set_volume(0.5)
         self.sound_attack1.set_volume(0.4)
         self.sound_attack2.set_volume(0.2)
         self.sound_attack3.set_volume(0.1)
+        self.sound_punch.set_volume(0.2)
+        self.sound_kick.set_volume(0.3)
 
         # playing background music
         pygame.mixer.music.load("../sounds/player/bgm.mp3")
@@ -73,7 +77,7 @@ class Player(Object.Object):
         self.punch_max_combo = 1000
         self.punch_delay = 10000
         self.punch_max_delay = 10000
-        self.punch_energy = 0.2
+        self.punch_energy = 0.1
 
         self.kick_combo = 0
         self.kick_max_combo = 1
@@ -98,7 +102,7 @@ class Player(Object.Object):
         self.dash_delay = 0
         self.dash_max_delay = 1000
         self.is_dash_able = True
-        self.dash_energy = 5
+        self.dash_energy = 2.5
 
         # player jump
         self.is_jump_able = True
@@ -384,13 +388,19 @@ class Player(Object.Object):
             if self.is_attack_able and not self.is_guard_on and self.energy >= self.attack_energy:
                 self.spr_index = 0
                 self.state_index = 3 + self.attack_combo
+
+                if self.attack_combo == 0:
+                    pygame.mixer.Sound.play(self.sound_attack1)
+                elif self.attack_combo == 1:
+                    pygame.mixer.Sound.play(self.sound_attack2)
+                elif self.attack_combo == 2:
+                    pygame.mixer.Sound.play(self.sound_attack3)
+
                 self.attack_combo += 1
                 self.attack_max_delay = self.attack_normal_max_delay
                 if self.attack_combo > self.attack_max_combo:
                     self.attack_combo = 0
                     self.attack_max_delay = self.attack_combo_max_delay
-
-                pygame.mixer.Sound.play(self.sound_attack1)
                 self.energy -= self.attack_energy
 
                 self.is_move_able = False
@@ -423,7 +433,7 @@ class Player(Object.Object):
                         self.is_attack_able = False
 
 
-                    pygame.mixer.Sound.play(self.sound_attack1)
+                    pygame.mixer.Sound.play(self.sound_punch)
                     self.energy -= self.punch_energy
 
     def punch_end(self):
@@ -453,7 +463,7 @@ class Player(Object.Object):
                     self.kick_combo = 0
                     self.kick_max_delay = self.kick_combo_max_delay
 
-                pygame.mixer.Sound.play(self.sound_attack1)
+                pygame.mixer.Sound.play(self.sound_kick)
                 self.energy -= self.attack_energy
 
                 self.is_move_able = False
