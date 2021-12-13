@@ -335,11 +335,9 @@ class Player(Object.Object):
                         self.state_index = 9
 
             if self.jump_point >= math.pi:
-                print(self.y)
                 self.is_jump_able = True
                 self.jump_point = 0
                 self.y = self.jump_start_point
-                print(self.jump_start_point)
                 if self.state_index == 8 or self.state_index == 9:
                     self.state_index = 0
 
