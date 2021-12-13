@@ -286,7 +286,7 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int, player 
         text = font.render("2020105706 - 서승원", False, black)
         screen.blit(text, (475, 380))
 
-        seconds = (player.play_time / 1000) % 60
+        seconds = round((player.play_time / 1000) % 60, 1)
         minutes = int(player.play_time / (1000 * 60)) % 60
         hours = int(player.play_time / (1000 * 60 * 60)) % 24
 
