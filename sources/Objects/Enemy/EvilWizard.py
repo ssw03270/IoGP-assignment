@@ -293,10 +293,10 @@ class EvilWizard(Object.Object):
                 self.is_move_sound_play = True
 
             # player position is right
-            if not self.direction:
+            if not self.direction and self.x <= 720:
                 self.x += self.move_speed * self.delta_time
             # player position is left
-            else:
+            elif self.direction and self.x >= 0:
                 self.x -= self.move_speed * self.delta_time
 
             self.spr_x = self.x
