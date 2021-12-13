@@ -17,7 +17,7 @@ class Player(Object.Object):
         self.health = self.max_health
         self.max_energy = 20
         self.energy = self.max_energy
-        self.attack_damage = 1
+        self.attack_damage = 1.5
 
         self.play_time = 0
         self.game_end = False
@@ -80,6 +80,8 @@ class Player(Object.Object):
         self.punch_max_combo = 1000
         self.punch_delay = 10000
         self.punch_max_delay = 10000
+        self.punch_delay_for_sound = 0
+        self.punch_sound_able = False
         self.punch_energy = 0.1
 
         self.kick_combo = 0
@@ -103,7 +105,7 @@ class Player(Object.Object):
         self.dash_range = 0
         self.dash_max_range = 200
         self.dash_delay = 0
-        self.dash_max_delay = 1000
+        self.dash_max_delay = 750
         self.is_dash_able = True
         self.dash_energy = 2.5
 
@@ -426,10 +428,12 @@ class Player(Object.Object):
                     self.is_attack_able = True
                     self.spr_index = 0
                     self.state_index = 11
+                    self.punch_sound_able = True
 
                 # player attack
                 if self.is_attack_able and not self.is_guard_on and self.energy >= self.attack_energy:
                     self.punch_combo += self.delta_time
+                    self.punch_delay_for_sound += self.delta_time
 
                     self.is_move_able = False
                     self.is_attacking = True
@@ -439,8 +443,14 @@ class Player(Object.Object):
                         self.punch_delay = 0
                         self.is_attack_able = False
 
+                    if self.sound_punch.get_length() * 1000 < self.punch_delay_for_sound:
+                        self.punch_sound_able = True
+                        self.punch_delay_for_sound = 0
 
-                    pygame.mixer.Sound.play(self.sound_punch)
+                    if self.punch_sound_able:
+                        pygame.mixer.Sound.play(self.sound_punch)
+                        self.punch_sound_able = False
+
                     self.energy -= self.punch_energy
 
     def punch_end(self):
