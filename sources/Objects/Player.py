@@ -17,7 +17,7 @@ class Player(Object.Object):
         self.health = self.max_health
         self.max_energy = 20
         self.energy = self.max_energy
-        self.attack_damage = 1
+        self.attack_damage = 1.5
 
         self.play_time = 0
         self.game_end = False
