@@ -19,7 +19,7 @@ class MartialHero(Object.Object):
         self.explosive_max_delay = 5000
         self.explosive_delay = 0
         self.is_explosive = False
-        self.name = "Martial Hero"
+        self.name = "Samurai"
         self.ability = []
         self.passe = 1
 

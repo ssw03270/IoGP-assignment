@@ -18,7 +18,7 @@ class MedievalWarrior(Object.Object):
         self.explosive_max_delay = 5000
         self.explosive_delay = 0
         self.is_explosive = False
-        self.name = "Medieval Warrior"
+        self.name = "GateKeeper"
         self.ability = []
 
         # flower enemy image
