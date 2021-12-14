@@ -96,8 +96,8 @@ def draw_level(tileset = Tileset.Tileset, level = int, delta_time = int, player 
         content = " 아주 먼 옛날, 배고픈 기사 하나가 길을 가고 있었다. 명예나 권력을 좋아하던 보통의 기사들과는 달리, 그는 오직 먹는 것만 좋아할 뿐이었다.\n\n" \
                   " 어느날 문득, 그는 왕의 점심은 얼마나 맛있을지에 대한 생각을 했다. 실행력이 좋았던 기사는 그 길로 곧장, 왕의 성으로 쳐들어가고자 했다. \n\n" \
                   " 하지만 성문에는 문지기가 있었다. 아무래도 기사는 그를 뚫고 가야 할 듯 했다. \n\n\n" \
-                  " 방향키 : 이동, Shift : 대시, Space : 점프" \
-                  " X, Z : 짧게 눌러 공격, Y : 길게 눌러 공격"
+                  " 방향키 : 이동, Shift : 대시, Space : 점프\n" \
+                  " Z, C : 짧게 눌러 공격, X : 길게 눌러 공격"
         paper = Paper.Paper(360, 270, "Paper", content)
         button_list.append(paper)
         draw(paper)
