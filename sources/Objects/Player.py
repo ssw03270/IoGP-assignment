@@ -17,7 +17,7 @@ class Player(Object.Object):
         self.health = self.max_health
         self.max_energy = 20
         self.energy = self.max_energy
-        self.attack_damage = 1.5
+        self.attack_damage = 1
 
         self.play_time = 0
         self.game_end = False
@@ -440,6 +440,7 @@ class Player(Object.Object):
                         self.punch_combo = 0
                         self.punch_delay = 0
                         self.is_attack_able = False
+                        self.state_index = 0
 
                     if self.sound_punch.get_length() * 1000 < self.punch_delay_for_sound:
                         self.punch_sound_able = True
@@ -459,6 +460,7 @@ class Player(Object.Object):
             self.is_attack_able = False
             self.is_attacking = True
             self.punch_delay = 0
+            self.state_index = 0
 
     def kick(self):
         # if player doesn't death
@@ -523,9 +525,9 @@ class Player(Object.Object):
                 self.is_invincibility = True
                 self.is_invincibility_able = True
                 self.dash_range = 0
-                if not self.is_attacking_state:
-                    self.state_index = 2
-                    self.energy -= self.dash_energy
+                self.state_index = 2
+                self.spr_index = 0
+                self.energy -= self.dash_energy
 
             # invincibility time
             if self.is_invincibility_able:
